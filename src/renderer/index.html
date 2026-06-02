@@ -72,44 +72,45 @@
           </p>
 
           <!-- Drag & Drop Zone -->
-          <div class="drop-zone mt-md" id="merge-dropzone">
-            <span class="material-symbols-rounded icon-large">cloud_upload</span>
-            <p>Drag & drop PDF files here or click to select</p>
-            <button class="citruss-btn btn-primary btn-sm mt-sm">Select Files</button>
-          </div>
-
-          <!-- File List -->
-          <div class="file-list-container mt-lg d-none" id="merge-list-container">
-            <h4>Selected Files</h4>
-            <div class="pages-gallery mt-md" id="merge-preview-grid">
-              <!-- Dynamically populated preview cards -->
+          <div class="drop-zone mt-md" id="merge-dropzone" style="min-height: 350px; display: flex; align-items: center; justify-content: center; flex-direction: column;">
+            <!-- Initial Prompt -->
+            <div id="merge-prompt" style="display: flex; flex-direction: column; align-items: center; gap: var(--citruss-spacing-xs);">
+              <span class="material-symbols-rounded icon-large">cloud_upload</span>
+              <p>Drag & drop PDF files here or click to select</p>
+              <button class="citruss-btn btn-primary btn-sm mt-sm">Select Files</button>
             </div>
 
-            <!-- Merge Compression Options -->
-            <div class="options-panel mt-lg">
-              <h4>Select Compression Level</h4>
-              <div class="radio-group mt-sm">
-                <label class="radio-label">
-                  <input type="radio" name="merge-compress-profile" value="none" checked>
-                  <span>No Compression (Original Quality)</span>
-                </label>
-                <label class="radio-label">
-                  <input type="radio" name="merge-compress-profile" value="ebook">
-                  <span>Standard Compression (150 DPI - Ghostscript)</span>
-                </label>
-                <label class="radio-label">
-                  <input type="radio" name="merge-compress-profile" value="screen">
-                  <span>Aggressive Compression (96 DPI - Ghostscript)</span>
-                </label>
+            <!-- File List (shares the same area inside the dropzone container) -->
+            <div class="file-list-container w-100 d-none" id="merge-list-container" style="flex-grow: 1; padding: var(--citruss-spacing-sm);">
+              <div class="pages-gallery" id="merge-preview-grid" style="background: transparent; border: none; max-height: 320px; overflow-y: auto;">
+                <!-- Dynamically populated preview cards -->
               </div>
             </div>
+          </div>
+        </div>
 
-            <div class="action-bar mt-lg">
-              <button class="citruss-btn btn-success" id="btn-merge-action">
-                <span class="material-symbols-rounded">merge</span> Merge PDFs
-              </button>
-              <button class="citruss-btn btn-danger" id="btn-merge-clear">Clear</button>
-            </div>
+        <!-- Fixed Footer Bar for Merge Options & Actions -->
+        <div class="merge-footer-bar d-none" id="merge-footer-bar">
+          <div class="footer-compression-group">
+            <span class="footer-label">Compression Level:</span>
+            <label class="radio-label">
+              <input type="radio" name="merge-compress-profile" value="none" checked>
+              <span>Original Quality</span>
+            </label>
+            <label class="radio-label">
+              <input type="radio" name="merge-compress-profile" value="ebook">
+              <span>Standard (150 DPI)</span>
+            </label>
+            <label class="radio-label">
+              <input type="radio" name="merge-compress-profile" value="screen">
+              <span>Aggressive (96 DPI)</span>
+            </label>
+          </div>
+          <div class="footer-action-group">
+            <button class="citruss-btn btn-success" id="btn-merge-action">
+              <span class="material-symbols-rounded">merge</span> Merge PDFs
+            </button>
+            <button class="citruss-btn btn-danger" id="btn-merge-clear">Clear</button>
           </div>
         </div>
       </section>

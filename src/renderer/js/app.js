@@ -93,6 +93,16 @@ function setupTabs() {
       if (targetSection) {
         targetSection.classList.add('active');
       }
+      
+      // Control Merge footer visibility when switching tabs
+      const footerBar = document.getElementById('merge-footer-bar');
+      if (footerBar) {
+        if (tab.dataset.tab === 'merge' && state.mergeFiles.length > 0) {
+          footerBar.classList.remove('d-none');
+        } else {
+          footerBar.classList.add('d-none');
+        }
+      }
     });
   });
 }
@@ -271,12 +281,20 @@ async function selectMergeFiles() {
 }
 
 function renderMergeList() {
+  const mergePrompt = document.getElementById('merge-prompt');
+  const footerBar = document.getElementById('merge-footer-bar');
+  
   if (state.mergeFiles.length === 0) {
     elements.mergeListContainer.classList.add('d-none');
+    if (mergePrompt) mergePrompt.classList.remove('d-none');
+    if (footerBar) footerBar.classList.add('d-none');
     return;
   }
   
   elements.mergeListContainer.classList.remove('d-none');
+  if (mergePrompt) mergePrompt.classList.add('d-none');
+  if (footerBar) footerBar.classList.remove('d-none');
+  
   elements.mergePreviewGrid.innerHTML = '';
   
   state.mergeFiles.forEach((fileObj, index) => {
