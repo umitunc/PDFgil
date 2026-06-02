@@ -14,6 +14,7 @@
   from {
     transform: translateY(12px);
   }
+
   to {
     transform: translateY(0);
   }
@@ -34,7 +35,8 @@
   gap: var(--citruss-spacing-xs);
 }
 
-.drop-zone:hover, .drop-zone.dragover {
+.drop-zone:hover,
+.drop-zone.dragover {
   border-color: var(--citruss-orange);
   background: rgba(255, 107, 0, 0.04);
   box-shadow: 0 0 20px rgba(255, 107, 0, 0.1);
@@ -46,7 +48,8 @@
   transition: color 0.3s ease;
 }
 
-.drop-zone:hover .icon-large, .drop-zone.dragover .icon-large {
+.drop-zone:hover .icon-large,
+.drop-zone.dragover .icon-large {
   color: var(--citruss-orange);
 }
 
@@ -200,10 +203,21 @@
 }
 
 /* Rotation Angles Classes */
-.rot-0 { transform: rotate(0deg); }
-.rot-90 { transform: rotate(90deg); }
-.rot-180 { transform: rotate(180deg); }
-.rot-270 { transform: rotate(270deg); }
+.rot-0 {
+  transform: rotate(0deg);
+}
+
+.rot-90 {
+  transform: rotate(90deg);
+}
+
+.rot-180 {
+  transform: rotate(180deg);
+}
+
+.rot-270 {
+  transform: rotate(270deg);
+}
 
 .page-number-badge {
   font-size: 0.8rem;
@@ -279,7 +293,7 @@ body.citruss-dashboard-shell::before {
   width: 100%;
   height: 100%;
   z-index: -1;
-  background-image: 
+  background-image:
     linear-gradient(rgba(255, 255, 255, 0.01) 1px, transparent 1px),
     linear-gradient(90deg, rgba(255, 255, 255, 0.01) 1px, transparent 1px);
   background-size: 32px 32px;
@@ -293,19 +307,20 @@ body.citruss-dashboard-shell::before {
 }
 
 [data-theme="light"] body.citruss-dashboard-shell::before {
-  background-image: 
+  background-image:
     linear-gradient(rgba(0, 0, 0, 0.01) 1px, transparent 1px),
     linear-gradient(90deg, rgba(0, 0, 0, 0.01) 1px, transparent 1px);
 }
 
 /* Frameless window header adjustments */
 header.citruss-navbar {
-  -webkit-app-region: drag; /* Allows dragging the window */
+  -webkit-app-region: drag;
+  /* Allows dragging the window */
   user-select: none;
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
+  top: 5px;
+  left: 5px;
+  right: 5px;
   height: 56px;
   z-index: 1000;
   padding: 0 16px 0 0;
@@ -313,14 +328,14 @@ header.citruss-navbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: var(--citruss-navbar-bg, rgba(15, 23, 42, 0.4));
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--citruss-glass-border);
 }
 
 main.citruss-dashboard-content {
-  margin-top: 56px; /* Offset for fixed header */
+  margin-top: 56px;
+  /* Offset for fixed header */
 }
 
 .logo-text {
@@ -402,6 +417,7 @@ html:not([data-theme="light"]) .logo-text,
 [data-theme="light"] .citruss-logo-area .logo-dark {
   display: none !important;
 }
+
 [data-theme="light"] .citruss-logo-area .logo-light {
   display: block !important;
 }
@@ -419,6 +435,7 @@ html:not([data-theme="light"]) .citruss-logo-area .logo-dark,
 [data-theme="dark"] .citruss-logo-area .logo-dark {
   display: block !important;
 }
+
 html:not([data-theme="light"]) .citruss-logo-area .logo-light,
 [data-theme="dark"] .citruss-logo-area .logo-light {
   display: none !important;
