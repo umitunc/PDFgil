@@ -239,6 +239,13 @@ function setupDropzones() {
     const filePaths = files.map(f => f.path);
     handleDroppedFiles(type, filePaths);
   }, false);
+
+  // Prevent clicks inside the file list container from bubbling up to the dropzone
+  if (elements.mergeListContainer) {
+    elements.mergeListContainer.addEventListener('click', (e) => {
+      e.stopPropagation();
+    });
+  }
 }
 
 // Handle drops based on tab context
