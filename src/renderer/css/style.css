@@ -336,14 +336,9 @@ header.citruss-navbar {
   -webkit-app-region: drag;
   /* Allows dragging the window */
   user-select: none;
-  position: fixed;
-  top: 5px;
-  left: 5px;
-  right: 5px;
   height: 56px;
-  z-index: 1000;
   padding: 0 16px 0 0;
-  margin: 0;
+  margin: 5px 5px 0 5px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -352,14 +347,46 @@ header.citruss-navbar {
   border-bottom: 1px solid var(--citruss-glass-border);
 }
 
-main.citruss-dashboard-content {
-  margin-top: 61px; /* Navbar height 56px + top 5px */
+.citruss-app-layout {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+  min-width: 800px;
+  min-height: 600px;
+}
+
+.layout-header {
+  flex-shrink: 0;
+  z-index: 10;
+  width: 100%;
+}
+
+.layout-content-wrapper {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+  min-height: 0;
+  width: 100%;
+}
+
+main.layout-content {
+  flex: 1;
+  overflow-y: auto;
+  height: 100%;
+  -webkit-overflow-scrolling: touch;
   padding: 16px !important;
-  height: calc(100vh - 61px);
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  overflow: hidden; /* Avoid double scrollbars on the main window */
+}
+
+.layout-footer {
+  flex-shrink: 0;
+  z-index: 10;
+  width: 100%;
 }
 
 .logo-text {
@@ -652,7 +679,7 @@ html:not([data-theme="light"]) .citruss-logo-area .logo-light,
 }
 
 .module-section .citruss-card {
-  height: calc(100vh - 61px - 32px) !important; /* Full height minus navbar and gaps */
+  height: 100% !important;
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
@@ -661,7 +688,7 @@ html:not([data-theme="light"]) .citruss-logo-area .logo-light,
 
 /* Shrink Merge Card dynamically when the fixed footer bar is visible */
 #sec-merge.has-footer .citruss-card {
-  height: calc(100vh - 61px - 32px - 76px - 10px) !important;
+  height: calc(100% - 86px) !important;
 }
 
 .module-section .citruss-card > .drop-zone {

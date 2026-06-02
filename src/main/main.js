@@ -10,8 +10,8 @@ function createWindow() {
   mainWindow = new BrowserWindow({
     width: 1020,
     height: 720,
-    minWidth: 800,
-    minHeight: 600,
+    minWidth: 1020,
+    minHeight: 720,
     icon: path.join(__dirname, '../renderer/images/pdfgil-icon.png'),
     webPreferences: {
       preload: path.join(__dirname, '../preload/preload.js'),
@@ -81,7 +81,7 @@ ipcMain.handle('pdf:select-files', async (event, options = {}) => {
   if (result.canceled) {
     return null;
   }
-  
+
   return result.filePaths;
 });
 
@@ -137,11 +137,11 @@ ipcMain.handle('pdf:merge', async (event, filePaths, outputPath, options = {}) =
     if (!options.compressProfile || options.compressProfile === 'none') {
       return await pdfServices.mergePDFs(filePaths, outputPath);
     }
-    
+
     // Create intermediate temp file for compression
     const tempFile = path.join(os.tmpdir(), `pdfgil_temp_merge_${Date.now()}.pdf`);
     await pdfServices.mergePDFs(filePaths, tempFile);
-    
+
     try {
       const result = await pdfServices.compressPDF(tempFile, options.compressProfile, outputPath);
       if (fs.existsSync(tempFile)) {

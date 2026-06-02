@@ -19,9 +19,10 @@
 
 <body class="citruss-dashboard-shell">
 
-  <div class="citruss-dashboard-main">
-    <!-- Header Navbar -->
-    <header class="citruss-navbar">
+  <div class="citruss-app-layout">
+    <!-- Fixed Header -->
+    <header class="layout-header">
+      <div class="citruss-navbar">
       <div class="citruss-logo-area" style="display: flex; align-items: center; gap: 10px; height: 100%;">
         <img src="images/pdfgil-icon.png" alt="PDFgil Logo" />
         <span class="logo-text">PDFgil</span>
@@ -61,8 +62,9 @@
       </div>
     </header>
 
-    <!-- Main Content Container -->
-    <main class="citruss-dashboard-content">
+    <div class="layout-content-wrapper">
+      <!-- Independent Scrollable Main Content -->
+      <main class="layout-content">
 
       <!-- Merge Module Section -->
       <section id="sec-merge" class="module-section active">
@@ -296,7 +298,11 @@
         </div>
       </div>
 
-    </main>
+      </main>
+    </div>
+
+    <!-- Fixed Footer -->
+    <footer class="layout-footer"></footer>
   </div>
 
   <!-- Confirm Dialog Modal -->
