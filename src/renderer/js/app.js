@@ -1,4 +1,4 @@
-// PDFgil Application Logic
+// PDFgil Application Logic — v2.0
 
 // App States
 const state = {
@@ -16,14 +16,14 @@ const elements = {
   sections: document.querySelectorAll('.module-section'),
   themeToggle: document.getElementById('theme-toggle'),
   themeIcon: document.getElementById('theme-icon'),
-  
+
   // Merge Tab
   mergeDropzone: document.getElementById('merge-dropzone'),
   mergeListContainer: document.getElementById('merge-list-container'),
   mergePreviewGrid: document.getElementById('merge-preview-grid'),
   btnMergeAction: document.getElementById('btn-merge-action'),
   btnMergeClear: document.getElementById('btn-merge-clear'),
-  
+
   // Split Tab
   splitDropzone: document.getElementById('split-dropzone'),
   splitDetailsContainer: document.getElementById('split-details-container'),
@@ -33,7 +33,7 @@ const elements = {
   splitRangeInput: document.getElementById('split-range'),
   btnSplitAction: document.getElementById('btn-split-action'),
   btnSplitClear: document.getElementById('btn-split-clear'),
-  
+
   // Rotate Tab
   rotateDropzone: document.getElementById('rotate-dropzone'),
   rotateDetailsContainer: document.getElementById('rotate-details-container'),
@@ -42,7 +42,7 @@ const elements = {
   rotateGallery: document.getElementById('rotate-gallery'),
   btnRotateAction: document.getElementById('btn-rotate-action'),
   btnRotateClear: document.getElementById('btn-rotate-clear'),
-  
+
   // Compress Tab
   compressDropzone: document.getElementById('compress-dropzone'),
   compressDetailsContainer: document.getElementById('compress-details-container'),
@@ -50,7 +50,7 @@ const elements = {
   compressFileMeta: document.getElementById('compress-file-meta'),
   btnCompressAction: document.getElementById('btn-compress-action'),
   btnCompressClear: document.getElementById('btn-compress-clear'),
-  
+
   // Toast
   toast: document.getElementById('status-toast'),
   toastMessage: document.getElementById('toast-message'),
@@ -65,41 +65,43 @@ document.addEventListener('DOMContentLoaded', () => {
   setupActions();
   setupWindowControls();
   setupLightbox();
-  
+  setupConfirmModal();
+  setupKeyboardShortcuts();
+
   const addMoreBtn = document.getElementById('btn-merge-add-more');
   if (addMoreBtn) {
     addMoreBtn.addEventListener('click', selectMergeFiles);
   }
 });
 
-// --- Window Controls ---
+// ─────────────────────────────────────────────
+// WINDOW CONTROLS
+// ─────────────────────────────────────────────
 function setupWindowControls() {
   document.getElementById('btn-win-minimize').addEventListener('click', () => {
     window.pdfgilAPI.minimizeWindow();
   });
-  
   document.getElementById('btn-win-maximize').addEventListener('click', () => {
     window.pdfgilAPI.maximizeWindow();
   });
-  
   document.getElementById('btn-win-close').addEventListener('click', () => {
     window.pdfgilAPI.closeWindow();
   });
 }
 
-// --- Tab Navigation ---
+// ─────────────────────────────────────────────
+// TAB NAVIGATION
+// ─────────────────────────────────────────────
 function setupTabs() {
   elements.tabs.forEach(tab => {
     tab.addEventListener('click', () => {
       elements.tabs.forEach(t => t.classList.remove('active'));
       elements.sections.forEach(s => s.classList.remove('active'));
-      
+
       tab.classList.add('active');
       const targetSection = document.getElementById(`sec-${tab.dataset.tab}`);
-      if (targetSection) {
-        targetSection.classList.add('active');
-      }
-      
+      if (targetSection) targetSection.classList.add('active');
+
       // Control Merge footer visibility when switching tabs
       const footerBar = document.getElementById('merge-footer-bar');
       if (footerBar) {
@@ -113,7 +115,9 @@ function setupTabs() {
   });
 }
 
-// --- Theme Management ---
+// ─────────────────────────────────────────────
+// THEME
+// ─────────────────────────────────────────────
 function setupTheme() {
   const currentTheme = localStorage.getItem('theme') || 'dark';
   document.documentElement.setAttribute('data-theme', currentTheme);
@@ -128,40 +132,26 @@ function setupTheme() {
   });
 }
 
-// --- Theme Icon Update ---
 function updateThemeIcon(theme) {
-  if (theme === 'dark') {
-    elements.themeIcon.textContent = 'light_mode';
-  } else {
-    elements.themeIcon.textContent = 'dark_mode';
-  }
+  elements.themeIcon.textContent = theme === 'dark' ? 'light_mode' : 'dark_mode';
 }
 
-// --- Status Toast ---
+// ─────────────────────────────────────────────
+// STATUS TOAST
+// ─────────────────────────────────────────────
 function showToast(message, type = 'info') {
   elements.toastMessage.textContent = message;
-  elements.toast.className = ''; // reset classes
-  
-  if (type === 'success') {
-    elements.toastIcon.textContent = 'check_circle';
-    elements.toastIcon.style.color = 'var(--citruss-lime)';
-  } else if (type === 'error') {
-    elements.toastIcon.textContent = 'error';
-    elements.toastIcon.style.color = 'var(--citruss-danger)';
-  } else if (type === 'warning') {
-    elements.toastIcon.textContent = 'warning';
-    elements.toastIcon.style.color = 'var(--citruss-lemon)';
-  } else {
-    elements.toastIcon.textContent = 'info';
-    elements.toastIcon.style.color = 'var(--citruss-orange)';
-  }
-  
+  elements.toast.className = '';
+
+  const icons = { success: 'check_circle', error: 'error', warning: 'warning', loading: 'hourglass_top', info: 'info' };
+  const colors = { success: 'var(--citruss-lime)', error: 'var(--citruss-danger)', warning: 'var(--citruss-lemon)', loading: 'var(--citruss-orange)', info: 'var(--citruss-orange)' };
+
+  elements.toastIcon.textContent = icons[type] || 'info';
+  elements.toastIcon.style.color = colors[type] || colors.info;
   elements.toast.classList.remove('status-toast-hidden');
-  
+
   if (type !== 'loading') {
-    setTimeout(() => {
-      elements.toast.classList.add('status-toast-hidden');
-    }, 4000);
+    setTimeout(() => elements.toast.classList.add('status-toast-hidden'), 4000);
   }
 }
 
@@ -169,9 +159,145 @@ function hideToast() {
   elements.toast.classList.add('status-toast-hidden');
 }
 
-// --- Dropzones & File Upload ---
+// ─────────────────────────────────────────────
+// BUTTON PROCESSING STATE
+// ─────────────────────────────────────────────
+function setProcessing(btn, isProcessing, originalHTML) {
+  if (isProcessing) {
+    btn._originalHTML = btn.innerHTML;
+    btn.innerHTML = `<span class="btn-spinner"></span> Processing...`;
+    btn.classList.add('btn-processing');
+  } else {
+    btn.innerHTML = btn._originalHTML || originalHTML || btn.innerHTML;
+    btn.classList.remove('btn-processing');
+  }
+}
+
+// ─────────────────────────────────────────────
+// CONFIRM MODAL
+// ─────────────────────────────────────────────
+let confirmCallback = null;
+
+function setupConfirmModal() {
+  document.getElementById('confirm-ok').addEventListener('click', () => {
+    closeConfirm();
+    if (typeof confirmCallback === 'function') confirmCallback();
+  });
+  document.getElementById('confirm-cancel').addEventListener('click', closeConfirm);
+  document.getElementById('confirm-backdrop').addEventListener('click', closeConfirm);
+}
+
+function showConfirm(title, msg, onConfirm) {
+  document.getElementById('confirm-title').textContent = title;
+  document.getElementById('confirm-msg').textContent = msg;
+  confirmCallback = onConfirm;
+  document.getElementById('confirm-modal').classList.remove('d-none');
+}
+
+function closeConfirm() {
+  document.getElementById('confirm-modal').classList.add('d-none');
+  confirmCallback = null;
+}
+
+// ─────────────────────────────────────────────
+// SUCCESS RESULT CARD
+// ─────────────────────────────────────────────
+function showResultCard(outputPath, label) {
+  const container = document.getElementById('result-card-container');
+  if (!container) return;
+
+  const fileName = outputPath.split(/[\\/]/).pop();
+  const fileSize = getResultFileSize(outputPath);
+
+  container.innerHTML = `
+    <div class="result-card">
+      <span class="material-symbols-rounded result-icon">check_circle</span>
+      <div class="result-info">
+        <div class="result-name" title="${outputPath}">${fileName}</div>
+        <div class="result-meta">${label}${fileSize ? ' — ' + fileSize : ''}</div>
+      </div>
+      <div class="result-actions">
+        <button class="citruss-btn btn-sm btn-success" onclick="openResultFile('${outputPath.replace(/\\/g, '\\\\')}')">
+          <span class="material-symbols-rounded">open_in_new</span> Open
+        </button>
+        <button class="citruss-btn btn-sm" onclick="showResultInFolder('${outputPath.replace(/\\/g, '\\\\')}')">
+          <span class="material-symbols-rounded">folder_open</span> Folder
+        </button>
+        <button class="citruss-btn btn-sm btn-icon" onclick="hideResultCard()" title="Dismiss">
+          <span class="material-symbols-rounded">close</span>
+        </button>
+      </div>
+    </div>
+  `;
+  container.classList.remove('d-none');
+}
+
+function getResultFileSize(outputPath) {
+  // We don't have sync fs access in renderer — we'll just show a checkmark.
+  return '';
+}
+
+window.hideResultCard = () => {
+  const container = document.getElementById('result-card-container');
+  if (container) {
+    container.classList.add('d-none');
+    container.innerHTML = '';
+  }
+};
+
+window.openResultFile = async (filePath) => {
+  try { await window.pdfgilAPI.openPath(filePath); } catch(e) { /* no-op */ }
+};
+
+window.showResultInFolder = async (filePath) => {
+  try { await window.pdfgilAPI.showItemInFolder(filePath); } catch(e) { /* no-op */ }
+};
+
+// ─────────────────────────────────────────────
+// KEYBOARD SHORTCUTS
+// ─────────────────────────────────────────────
+function setupKeyboardShortcuts() {
+  window.addEventListener('keydown', (e) => {
+    // Don't trigger if typing in an input/textarea
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+
+    const activeTab = document.querySelector('#module-tabs button.active');
+    if (!activeTab) return;
+    const tab = activeTab.dataset.tab;
+
+    // Ctrl+O — Open / select file
+    if (e.ctrlKey && e.key === 'o') {
+      e.preventDefault();
+      if (tab === 'merge') selectMergeFiles();
+      else if (tab === 'split') selectSplitFile();
+      else if (tab === 'rotate') selectRotateFile();
+      else if (tab === 'compress') selectCompressFile();
+    }
+
+    // Ctrl+Enter — Execute main action
+    if (e.ctrlKey && e.key === 'Enter') {
+      e.preventDefault();
+      if (tab === 'merge' && elements.btnMergeAction) elements.btnMergeAction.click();
+      else if (tab === 'split' && elements.btnSplitAction) elements.btnSplitAction.click();
+      else if (tab === 'rotate' && elements.btnRotateAction) elements.btnRotateAction.click();
+      else if (tab === 'compress' && elements.btnCompressAction) elements.btnCompressAction.click();
+    }
+
+    // Delete — Clear current module
+    if (e.key === 'Delete') {
+      e.preventDefault();
+      if (tab === 'merge' && elements.btnMergeClear) elements.btnMergeClear.click();
+      else if (tab === 'split' && elements.btnSplitClear) elements.btnSplitClear.click();
+      else if (tab === 'rotate' && elements.btnRotateClear) elements.btnRotateClear.click();
+      else if (tab === 'compress' && elements.btnCompressClear) elements.btnCompressClear.click();
+    }
+  });
+}
+
+// ─────────────────────────────────────────────
+// DROPZONES & FILE UPLOAD
+// ─────────────────────────────────────────────
 function setupDropzones() {
-  // Config pairs for each dropzone
   const configs = [
     { zone: elements.mergeDropzone, action: selectMergeFiles, type: 'merge' },
     { zone: elements.splitDropzone, action: selectSplitFile, type: 'split' },
@@ -180,15 +306,10 @@ function setupDropzones() {
   ];
 
   configs.forEach(({ zone, action, type }) => {
-    // Click action
     zone.addEventListener('click', (e) => {
-      // Don't fire if child button was clicked since we handle button directly
-      if (e.target.tagName !== 'BUTTON') {
-        action();
-      }
+      if (e.target.tagName !== 'BUTTON') action();
     });
 
-    // Select button inside dropzone
     const btn = zone.querySelector('button');
     if (btn) {
       btn.addEventListener('click', (e) => {
@@ -197,7 +318,6 @@ function setupDropzones() {
       });
     }
 
-    // Drag events
     zone.addEventListener('dragover', (e) => {
       e.preventDefault();
       zone.classList.add('dragover');
@@ -210,73 +330,51 @@ function setupDropzones() {
     zone.addEventListener('drop', async (e) => {
       e.preventDefault();
       zone.classList.remove('dragover');
-      
       const files = Array.from(e.dataTransfer.files).filter(f => f.path && f.path.endsWith('.pdf'));
       if (files.length === 0) {
         showToast('Please drag and drop PDF files only.', 'error');
         return;
       }
-      
-      const filePaths = files.map(f => f.path);
-      handleDroppedFiles(type, filePaths);
+      handleDroppedFiles(type, files.map(f => f.path));
     });
   });
 
-  // Global window drag & drop event prevention & routing
-  // Prevents Electron from loading/navigating to the PDF file (which resets/reloads the application)
-  window.addEventListener('dragover', (e) => {
-    e.preventDefault();
-  }, false);
-
+  // Global drag prevention
+  window.addEventListener('dragover', (e) => e.preventDefault(), false);
   window.addEventListener('drop', async (e) => {
     e.preventDefault();
-    
-    // Find which tab/module is currently active
     const activeTab = document.querySelector('#module-tabs button.active');
     if (!activeTab) return;
-    const type = activeTab.dataset.tab;
-    
     const files = Array.from(e.dataTransfer.files).filter(f => f.path && f.path.endsWith('.pdf'));
     if (files.length === 0) {
       showToast('Please drag and drop PDF files only.', 'error');
       return;
     }
-    
-    const filePaths = files.map(f => f.path);
-    handleDroppedFiles(type, filePaths);
+    handleDroppedFiles(activeTab.dataset.tab, files.map(f => f.path));
   }, false);
 
-  // Prevent clicks inside the file list container from bubbling up to the dropzone
+  // Prevent click bubbling from list container to dropzone
   if (elements.mergeListContainer) {
-    elements.mergeListContainer.addEventListener('click', (e) => {
-      e.stopPropagation();
-    });
+    elements.mergeListContainer.addEventListener('click', (e) => e.stopPropagation());
   }
 }
 
-// Handle drops based on tab context
 async function handleDroppedFiles(type, paths) {
   if (type === 'merge') {
     for (const path of paths) {
       if (!state.mergeFiles.some(f => f.path === path)) {
-        state.mergeFiles.push({ path: path, rotation: 0 });
+        state.mergeFiles.push({ path, rotation: 0 });
       }
     }
     renderMergeList();
   } else {
-    // Single file imports
     const path = paths[0];
-    if (type === 'split') {
-      loadSplitFile(path);
-    } else if (type === 'rotate') {
-      loadRotateFile(path);
-    } else if (type === 'compress') {
-      loadCompressFile(path);
-    }
+    if (type === 'split') loadSplitFile(path);
+    else if (type === 'rotate') loadRotateFile(path);
+    else if (type === 'compress') loadCompressFile(path);
   }
 }
 
-// Format file size
 function formatBytes(bytes) {
   if (bytes === 0) return '0 Bytes';
   const k = 1024;
@@ -285,12 +383,12 @@ function formatBytes(bytes) {
   return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
 }
 
-// --- Merge Tab Logic ---
+// ─────────────────────────────────────────────
+// MERGE TAB
+// ─────────────────────────────────────────────
 async function selectMergeFiles() {
   const filePaths = await window.pdfgilAPI.selectFiles({ title: 'Select PDF Files to Merge', multi: true });
-  if (filePaths) {
-    handleDroppedFiles('merge', filePaths);
-  }
+  if (filePaths) handleDroppedFiles('merge', filePaths);
 }
 
 function renderMergeList() {
@@ -298,7 +396,10 @@ function renderMergeList() {
   const footerBar = document.getElementById('merge-footer-bar');
   const secMerge = document.getElementById('sec-merge');
   const addMoreBtn = document.getElementById('btn-merge-add-more');
-  
+  const countBadge = document.getElementById('merge-file-count');
+  const countText = document.getElementById('merge-file-count-text');
+  const kbdHint = document.getElementById('merge-kbd-hint');
+
   if (state.mergeFiles.length === 0) {
     if (secMerge) secMerge.classList.remove('has-footer');
     elements.mergeDropzone.classList.remove('has-files');
@@ -306,18 +407,33 @@ function renderMergeList() {
     if (mergePrompt) mergePrompt.classList.remove('d-none');
     if (footerBar) footerBar.classList.add('d-none');
     if (addMoreBtn) addMoreBtn.classList.add('d-none');
+    if (countBadge) countBadge.classList.add('d-none');
+    if (kbdHint) kbdHint.classList.add('d-none');
+    window.hideResultCard();
     return;
   }
-  
+
   if (secMerge) secMerge.classList.add('has-footer');
   elements.mergeDropzone.classList.add('has-files');
   elements.mergeListContainer.classList.remove('d-none');
   if (mergePrompt) mergePrompt.classList.add('d-none');
   if (footerBar) footerBar.classList.remove('d-none');
   if (addMoreBtn) addMoreBtn.classList.remove('d-none');
-  
+
+  // Update file count badge
+  if (countBadge && countText) {
+    countBadge.classList.remove('d-none');
+    const n = state.mergeFiles.length;
+    countText.textContent = `${n} file${n !== 1 ? 's' : ''}`;
+    // Re-trigger badge pop animation
+    countBadge.style.animation = 'none';
+    countBadge.offsetHeight; // reflow
+    countBadge.style.animation = '';
+  }
+  if (kbdHint) kbdHint.classList.remove('d-none');
+
   elements.mergePreviewGrid.innerHTML = '';
-  
+
   state.mergeFiles.forEach((fileObj, index) => {
     const file = fileObj.path;
     const rotation = fileObj.rotation || 0;
@@ -325,46 +441,39 @@ function renderMergeList() {
     const card = document.createElement('div');
     card.className = 'page-card';
     card.setAttribute('draggable', 'true');
-    
-    // Drag & Drop reordering logic
+
+    // Drag & Drop reordering
     card.addEventListener('dragstart', (e) => {
       card.classList.add('dragging');
       e.dataTransfer.effectAllowed = 'move';
       e.dataTransfer.setData('text/plain', index);
     });
-    
+
     card.addEventListener('dragover', (e) => {
       e.preventDefault();
       e.dataTransfer.dropEffect = 'move';
     });
-    
-    card.addEventListener('dragenter', () => {
-      card.classList.add('drag-over');
-    });
-    
-    card.addEventListener('dragleave', () => {
-      card.classList.remove('drag-over');
-    });
-    
+
+    card.addEventListener('dragenter', () => card.classList.add('drag-over'));
+    card.addEventListener('dragleave', () => card.classList.remove('drag-over'));
+
     card.addEventListener('drop', (e) => {
       e.preventDefault();
       card.classList.remove('drag-over');
       const srcIndex = parseInt(e.dataTransfer.getData('text/plain'), 10);
-      const targetIndex = index;
-      
-      if (srcIndex !== targetIndex && !isNaN(srcIndex)) {
+      if (srcIndex !== index && !isNaN(srcIndex)) {
         const draggedItem = state.mergeFiles[srcIndex];
         state.mergeFiles.splice(srcIndex, 1);
-        state.mergeFiles.splice(targetIndex, 0, draggedItem);
+        state.mergeFiles.splice(index, 0, draggedItem);
         renderMergeList();
       }
     });
-    
+
     card.addEventListener('dragend', () => {
       card.classList.remove('dragging');
       document.querySelectorAll('.page-card').forEach(c => c.classList.remove('drag-over'));
     });
-    
+
     card.innerHTML = `
       <div class="page-thumbnail-container" onclick="openLightbox('${file.replace(/\\/g, '\\\\')}', 0, '${filename}')" style="cursor: pointer;">
         <canvas class="page-thumbnail-canvas rot-${rotation}" id="merge-canvas-${index}"></canvas>
@@ -376,7 +485,7 @@ function renderMergeList() {
         <button class="citruss-btn btn-sm btn-icon" onclick="moveMergeItem(${index}, -1)" ${index === 0 ? 'disabled' : ''} title="Move Left">
           <span class="material-symbols-rounded">arrow_back</span>
         </button>
-        <button class="citruss-btn btn-sm btn-icon" onclick="rotateMergeItem(${index})" title="Rotate 90 Degrees">
+        <button class="citruss-btn btn-sm btn-icon" id="rotate-btn-${index}" onclick="rotateMergeItem(${index}, this)" title="Rotate 90°">
           <span class="material-symbols-rounded">rotate_right</span>
         </button>
         <button class="citruss-btn btn-sm btn-icon" onclick="moveMergeItem(${index}, 1)" ${index === state.mergeFiles.length - 1 ? 'disabled' : ''} title="Move Right">
@@ -388,15 +497,19 @@ function renderMergeList() {
       </div>
     `;
     elements.mergePreviewGrid.appendChild(card);
-    
-    // Render first page cover thumbnail async
+
     const canvas = document.getElementById(`merge-canvas-${index}`);
     renderPageThumbnail(file, 0, canvas);
   });
 }
 
-window.rotateMergeItem = (index) => {
+window.rotateMergeItem = (index, btn) => {
   if (index >= 0 && index < state.mergeFiles.length) {
+    // Play spin animation on the button
+    if (btn) {
+      btn.classList.add('rotating');
+      setTimeout(() => btn.classList.remove('rotating'), 350);
+    }
     const fileObj = state.mergeFiles[index];
     fileObj.rotation = (fileObj.rotation + 90) % 360;
     renderMergeList();
@@ -420,12 +533,12 @@ window.removeMergeItem = (index) => {
   }
 };
 
-// --- Split Tab Logic ---
+// ─────────────────────────────────────────────
+// SPLIT TAB
+// ─────────────────────────────────────────────
 async function selectSplitFile() {
   const filePaths = await window.pdfgilAPI.selectFiles({ title: 'Select PDF File to Split', multi: false });
-  if (filePaths && filePaths.length > 0) {
-    loadSplitFile(filePaths[0]);
-  }
+  if (filePaths && filePaths.length > 0) loadSplitFile(filePaths[0]);
 }
 
 async function loadSplitFile(filePath) {
@@ -433,10 +546,8 @@ async function loadSplitFile(filePath) {
     showToast('Loading file...', 'loading');
     const metadata = await window.pdfgilAPI.getMetadata(filePath);
     state.splitFile = filePath;
-    
     elements.splitFileName.textContent = filePath.split(/[\\/]/).pop();
-    elements.splitFileMeta.textContent = `${metadata.pageCount} pages - ${formatBytes(metadata.sizeBytes)}`;
-    
+    elements.splitFileMeta.textContent = `${metadata.pageCount} pages — ${formatBytes(metadata.sizeBytes)}`;
     elements.splitDetailsContainer.classList.remove('d-none');
     elements.splitDropzone.classList.add('d-none');
     hideToast();
@@ -445,12 +556,12 @@ async function loadSplitFile(filePath) {
   }
 }
 
-// --- Rotate Tab Logic ---
+// ─────────────────────────────────────────────
+// ROTATE TAB
+// ─────────────────────────────────────────────
 async function selectRotateFile() {
   const filePaths = await window.pdfgilAPI.selectFiles({ title: 'Select PDF File to Rotate', multi: false });
-  if (filePaths && filePaths.length > 0) {
-    loadRotateFile(filePaths[0]);
-  }
+  if (filePaths && filePaths.length > 0) loadRotateFile(filePaths[0]);
 }
 
 async function loadRotateFile(filePath) {
@@ -458,22 +569,17 @@ async function loadRotateFile(filePath) {
     showToast('Preparing previews...', 'loading');
     const metadata = await window.pdfgilAPI.getMetadata(filePath);
     state.rotateFile = filePath;
-    state.rotateState = {}; // reset
-    
+    state.rotateState = {};
     elements.rotateFileName.textContent = filePath.split(/[\\/]/).pop();
     elements.rotateFileMeta.textContent = `${metadata.pageCount} pages`;
-    
     elements.rotateGallery.innerHTML = '';
     elements.rotateDetailsContainer.classList.remove('d-none');
     elements.rotateDropzone.classList.add('d-none');
-    
-    // Clear preview cache to free memory
     clearPdfCache();
-    
-    // Create card element for each page
+
     for (let i = 0; i < metadata.pageCount; i++) {
-      state.rotateState[i] = 0; // standard rotation is 0
-      
+      state.rotateState[i] = 0;
+
       const card = document.createElement('div');
       card.className = 'page-card';
       card.innerHTML = `
@@ -481,42 +587,48 @@ async function loadRotateFile(filePath) {
           <canvas class="page-thumbnail-canvas rot-0" id="canvas-page-${i}"></canvas>
         </div>
         <div class="page-number-badge">Page ${i + 1}</div>
-        <button class="citruss-btn btn-sm btn-icon" onclick="rotatePage(${i})" title="Rotate 90 Degrees">
-          <span class="material-symbols-rounded">rotate_right</span>
-        </button>
+        <div class="file-item-actions">
+          <button class="citruss-btn btn-sm btn-icon" id="rotate-page-btn-${i}" onclick="rotatePage(${i}, this)" title="Rotate 90°">
+            <span class="material-symbols-rounded">rotate_right</span>
+          </button>
+        </div>
       `;
       elements.rotateGallery.appendChild(card);
-      
-      // Render the thumbnail async
+
       const canvas = document.getElementById(`canvas-page-${i}`);
       renderPageThumbnail(filePath, i, canvas);
     }
-    
+
     hideToast();
   } catch (err) {
     showToast(err.message, 'error');
   }
 }
 
-window.rotatePage = (pageIndex) => {
+window.rotatePage = (pageIndex, btn) => {
   const currentAngle = state.rotateState[pageIndex] || 0;
   const newAngle = (currentAngle + 90) % 360;
   state.rotateState[pageIndex] = newAngle;
-  
+
   const canvas = document.getElementById(`canvas-page-${pageIndex}`);
   if (canvas) {
-    // Reset rotations classes
     canvas.className = 'page-thumbnail-canvas';
     canvas.classList.add(`rot-${newAngle}`);
   }
+
+  // Spin animation on rotate button
+  if (btn) {
+    btn.classList.add('rotating');
+    setTimeout(() => btn.classList.remove('rotating'), 350);
+  }
 };
 
-// --- Compress Tab Logic ---
+// ─────────────────────────────────────────────
+// COMPRESS TAB
+// ─────────────────────────────────────────────
 async function selectCompressFile() {
   const filePaths = await window.pdfgilAPI.selectFiles({ title: 'Select PDF File to Compress', multi: false });
-  if (filePaths && filePaths.length > 0) {
-    loadCompressFile(filePaths[0]);
-  }
+  if (filePaths && filePaths.length > 0) loadCompressFile(filePaths[0]);
 }
 
 async function loadCompressFile(filePath) {
@@ -524,10 +636,8 @@ async function loadCompressFile(filePath) {
     showToast('Loading file...', 'loading');
     const metadata = await window.pdfgilAPI.getMetadata(filePath);
     state.compressFile = filePath;
-    
     elements.compressFileName.textContent = filePath.split(/[\\/]/).pop();
     elements.compressFileMeta.textContent = `Original Size: ${formatBytes(metadata.sizeBytes)}`;
-    
     elements.compressDetailsContainer.classList.remove('d-none');
     elements.compressDropzone.classList.add('d-none');
     hideToast();
@@ -536,46 +646,54 @@ async function loadCompressFile(filePath) {
   }
 }
 
-// --- Action Executions ---
+// ─────────────────────────────────────────────
+// ACTIONS
+// ─────────────────────────────────────────────
 function setupActions() {
-  // Merge Action
+  // ── Merge ──
   elements.btnMergeAction.addEventListener('click', async () => {
     if (state.mergeFiles.length < 2) {
       showToast('You must select at least 2 files to merge.', 'error');
       return;
     }
-    
+
     const profile = document.getElementById('merge-compress-profile').value;
-    
     const outputPath = await window.pdfgilAPI.selectSavePath({
       title: 'Save Merged PDF file',
       defaultPath: 'merged_document.pdf'
     });
-    
     if (!outputPath) return;
-    
+
+    setProcessing(elements.btnMergeAction, true);
     showToast('Merging PDF files...', 'loading');
+
     const result = await window.pdfgilAPI.mergePDFs(state.mergeFiles, outputPath, { compressProfile: profile });
-    
+    setProcessing(elements.btnMergeAction, false);
+
     if (result.success) {
-      const msg = result.fallback
-        ? `Merge completed! ${result.message}`
-        : 'Merge process completed successfully!';
+      const msg = result.fallback ? `Merge completed! ${result.message}` : 'Merge completed successfully!';
       showToast(msg, result.fallback ? 'warning' : 'success');
-      // Reset list
       state.mergeFiles = [];
       renderMergeList();
+      showResultCard(outputPath, 'Merged PDF saved');
     } else {
-      showToast(`Error occurred: ${result.error}`, 'error');
+      showToast(`Error: ${result.error}`, 'error');
     }
   });
 
   elements.btnMergeClear.addEventListener('click', () => {
-    state.mergeFiles = [];
-    renderMergeList();
+    if (state.mergeFiles.length === 0) return;
+    showConfirm(
+      'Clear all files?',
+      `${state.mergeFiles.length} file(s) will be removed from the merge list.`,
+      () => {
+        state.mergeFiles = [];
+        renderMergeList();
+      }
+    );
   });
 
-  // Split Action
+  // ── Split ──
   const splitRadios = document.querySelectorAll('input[name="split-mode"]');
   splitRadios.forEach(radio => {
     radio.addEventListener('change', () => {
@@ -589,11 +707,11 @@ function setupActions() {
 
   elements.btnSplitAction.addEventListener('click', async () => {
     if (!state.splitFile) return;
-    
+
     const mode = document.querySelector('input[name="split-mode"]:checked').value;
     let options = { type: mode };
     let outputPath = '';
-    
+
     if (mode === 'range') {
       const rangeVal = elements.splitRangeInput.value.trim();
       if (!rangeVal) {
@@ -601,31 +719,31 @@ function setupActions() {
         return;
       }
       options.range = rangeVal;
-      
-      outputPath = await window.pdfgilAPI.selectSavePath({
-        title: 'Save split pages',
-        defaultPath: 'split_document.pdf'
-      });
+      outputPath = await window.pdfgilAPI.selectSavePath({ title: 'Save split pages', defaultPath: 'split_document.pdf' });
       if (!outputPath) return;
     } else {
-      // Split all pages individually, output is to a directory
       outputPath = await window.pdfgilAPI.selectFolder();
       if (!outputPath) return;
     }
-    
+
+    setProcessing(elements.btnSplitAction, true);
     showToast('Splitting PDF...', 'loading');
     const result = await window.pdfgilAPI.splitPDF(state.splitFile, options, outputPath);
-    
+    setProcessing(elements.btnSplitAction, false);
+
     if (result.success) {
-      showToast('Split process completed successfully!', 'success');
+      showToast('Split completed successfully!', 'success');
       clearSplitSelection();
     } else {
-      showToast(`Error occurred: ${result.error}`, 'error');
+      showToast(`Error: ${result.error}`, 'error');
     }
   });
 
-  elements.btnSplitClear.addEventListener('click', clearSplitSelection);
-  
+  elements.btnSplitClear.addEventListener('click', () => {
+    if (!state.splitFile) return;
+    showConfirm('Clear selection?', 'The loaded file will be removed from Split.', clearSplitSelection);
+  });
+
   function clearSplitSelection() {
     state.splitFile = null;
     elements.splitDetailsContainer.classList.add('d-none');
@@ -633,30 +751,34 @@ function setupActions() {
     elements.splitRangeInput.value = '';
   }
 
-  // Rotate Action
+  // ── Rotate ──
   elements.btnRotateAction.addEventListener('click', async () => {
     if (!state.rotateFile) return;
-    
+
     const outputPath = await window.pdfgilAPI.selectSavePath({
       title: 'Save rotated PDF file',
       defaultPath: 'rotated_document.pdf'
     });
-    
     if (!outputPath) return;
-    
+
+    setProcessing(elements.btnRotateAction, true);
     showToast('Applying rotations...', 'loading');
     const result = await window.pdfgilAPI.rotatePDF(state.rotateFile, state.rotateState, outputPath);
-    
+    setProcessing(elements.btnRotateAction, false);
+
     if (result.success) {
       showToast('Rotations saved successfully!', 'success');
       clearRotateSelection();
     } else {
-      showToast(`Error occurred: ${result.error}`, 'error');
+      showToast(`Error: ${result.error}`, 'error');
     }
   });
 
-  elements.btnRotateClear.addEventListener('click', clearRotateSelection);
-  
+  elements.btnRotateClear.addEventListener('click', () => {
+    if (!state.rotateFile) return;
+    showConfirm('Clear selection?', 'The loaded file and all rotation data will be reset.', clearRotateSelection);
+  });
+
   function clearRotateSelection() {
     state.rotateFile = null;
     state.rotateState = {};
@@ -666,35 +788,36 @@ function setupActions() {
     clearPdfCache();
   }
 
-  // Compress Action
+  // ── Compress ──
   elements.btnCompressAction.addEventListener('click', async () => {
     if (!state.compressFile) return;
-    
+
     const profile = document.querySelector('input[name="compress-profile"]:checked').value;
-    
     const outputPath = await window.pdfgilAPI.selectSavePath({
       title: 'Save compressed PDF file',
       defaultPath: 'compressed_document.pdf'
     });
-    
     if (!outputPath) return;
-    
+
+    setProcessing(elements.btnCompressAction, true);
     showToast('Compressing PDF...', 'loading');
     const result = await window.pdfgilAPI.compressPDF(state.compressFile, profile, outputPath);
-    
+    setProcessing(elements.btnCompressAction, false);
+
     if (result.success) {
-      const msg = result.fallback 
-        ? `${result.message}` 
-        : 'Compression process completed successfully!';
+      const msg = result.fallback ? result.message : 'Compression completed successfully!';
       showToast(msg, result.fallback ? 'warning' : 'success');
       clearCompressSelection();
     } else {
-      showToast(`Error occurred: ${result.error}`, 'error');
+      showToast(`Error: ${result.error}`, 'error');
     }
   });
 
-  elements.btnCompressClear.addEventListener('click', clearCompressSelection);
-  
+  elements.btnCompressClear.addEventListener('click', () => {
+    if (!state.compressFile) return;
+    showConfirm('Clear selection?', 'The loaded file will be removed from Compress.', clearCompressSelection);
+  });
+
   function clearCompressSelection() {
     state.compressFile = null;
     elements.compressDetailsContainer.classList.add('d-none');
@@ -702,14 +825,14 @@ function setupActions() {
   }
 }
 
-// --- Lightbox Preview Modal Logic ---
+// ─────────────────────────────────────────────
+// LIGHTBOX PREVIEW MODAL
+// ─────────────────────────────────────────────
 function setupLightbox() {
   const closeBtn = document.getElementById('btn-lightbox-close');
   const backdrop = document.getElementById('lightbox-backdrop');
   if (closeBtn) closeBtn.addEventListener('click', window.closeLightbox);
   if (backdrop) backdrop.addEventListener('click', window.closeLightbox);
-  
-  // Close on Escape key
   window.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') window.closeLightbox();
   });
@@ -719,33 +842,23 @@ window.openLightbox = async (filePath, pageIndex, title) => {
   const modal = document.getElementById('preview-lightbox');
   const modalTitle = document.getElementById('lightbox-title');
   const canvas = document.getElementById('lightbox-canvas');
-  
   if (!modal || !canvas) return;
-  
+
   modalTitle.textContent = title;
   modal.classList.remove('d-none');
   showToast('Loading preview...', 'loading');
-  
+
   try {
     const pdfDoc = await getPdfDocument(filePath);
     const page = await pdfDoc.getPage(pageIndex + 1);
     const context = canvas.getContext('2d');
-    
-    // Scale for high quality preview (width max 800px or target height)
     const initialViewport = page.getViewport({ scale: 1.0 });
     const targetHeight = Math.min(650, window.innerHeight * 0.65);
     const scale = targetHeight / initialViewport.height;
     const viewport = page.getViewport({ scale });
-    
     canvas.height = viewport.height;
     canvas.width = viewport.width;
-    
-    const renderContext = {
-      canvasContext: context,
-      viewport: viewport
-    };
-    
-    await page.render(renderContext).promise;
+    await page.render({ canvasContext: context, viewport }).promise;
     hideToast();
   } catch (error) {
     console.error('Error rendering lightbox preview:', error);
@@ -755,7 +868,5 @@ window.openLightbox = async (filePath, pageIndex, title) => {
 
 window.closeLightbox = () => {
   const modal = document.getElementById('preview-lightbox');
-  if (modal) {
-    modal.classList.add('d-none');
-  }
+  if (modal) modal.classList.add('d-none');
 };

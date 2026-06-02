@@ -99,6 +99,15 @@
 .file-item-actions {
   display: flex;
   gap: var(--citruss-spacing-xs);
+  opacity: 0;
+  transform: translateY(4px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.page-card:hover .file-item-actions,
+.file-item:hover .file-item-actions {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 /* File Details Badge */
@@ -271,7 +280,7 @@
   gap: var(--citruss-spacing-sm);
   padding: var(--citruss-spacing-sm) var(--citruss-spacing-md);
   background: rgba(254, 202, 87, 0.06);
-  border: 1px solid rgba(25eca57, 0.15);
+  border: 1px solid rgba(254, 202, 87, 0.15);
   border-radius: var(--citruss-radius-sm);
   align-items: flex-start;
 }
@@ -723,4 +732,284 @@ html:not([data-theme="light"]) .citruss-logo-area .logo-light,
     opacity: 1;
     transform: scale(1) translateY(0);
   }
+}
+
+/* ====================================================
+   CUSTOM SCROLLBAR
+   ==================================================== */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 3px;
+  transition: background 0.2s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 107, 0, 0.5);
+}
+
+[data-theme="light"] ::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+[data-theme="light"] ::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.18);
+}
+
+[data-theme="light"] ::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 107, 0, 0.5);
+}
+
+/* ====================================================
+   FILE COUNT BADGE
+   ==================================================== */
+.file-count-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: linear-gradient(135deg, rgba(255, 107, 0, 0.25), rgba(255, 107, 0, 0.12));
+  border: 1px solid rgba(255, 107, 0, 0.35);
+  color: var(--citruss-orange);
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 20px;
+  letter-spacing: 0.3px;
+  animation: badgePop 0.3s var(--citruss-spring-bezier);
+  white-space: nowrap;
+}
+
+@keyframes badgePop {
+  from { transform: scale(0.7); opacity: 0; }
+  to   { transform: scale(1);   opacity: 1; }
+}
+
+/* ====================================================
+   PROCESSING SPINNER / BUTTON LOADING STATE
+   ==================================================== */
+.btn-processing {
+  position: relative;
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+.btn-processing .btn-spinner {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  vertical-align: middle;
+  margin-right: 6px;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ====================================================
+   DROPZONE FLOATING ICON ANIMATION
+   ==================================================== */
+@keyframes floatIcon {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-8px); }
+}
+
+.drop-zone:not(.has-files) .icon-large {
+  animation: floatIcon 3s ease-in-out infinite;
+}
+
+.drop-zone.dragover .icon-large {
+  animation: none;
+  transform: scale(1.15);
+  color: var(--citruss-orange);
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+/* ====================================================
+   PAGE CARD — ROTATE BUTTON SPIN ANIMATION
+   ==================================================== */
+@keyframes rotatePulse {
+  0%   { transform: rotate(0deg); }
+  100% { transform: rotate(90deg); }
+}
+
+.page-card .btn-icon.rotating .material-symbols-rounded {
+  animation: rotatePulse 0.3s ease forwards;
+}
+
+/* Drag state — scale down the ghost card */
+.page-card.dragging {
+  opacity: 0.25 !important;
+  transform: scale(0.94) !important;
+}
+
+/* Page number band */
+.page-number-badge {
+  background: rgba(0, 0, 0, 0.25);
+  border-radius: var(--citruss-radius-sm);
+  padding: 2px 8px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+[data-theme="light"] .page-number-badge {
+  background: rgba(0, 0, 0, 0.06);
+}
+
+/* ====================================================
+   CONFIRM MODAL
+   ==================================================== */
+.confirm-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 3000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.confirm-modal.d-none {
+  display: none !important;
+}
+
+.confirm-modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.confirm-modal-box {
+  position: relative;
+  z-index: 3001;
+  background: rgba(12, 18, 36, 0.85);
+  backdrop-filter: blur(32px) saturate(180%);
+  -webkit-backdrop-filter: blur(32px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--citruss-radius-lg);
+  padding: 32px 36px;
+  min-width: 340px;
+  max-width: 420px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
+  animation: modalZoomIn 0.25s var(--citruss-spring-bezier);
+  text-align: center;
+}
+
+[data-theme="light"] .confirm-modal-box {
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.12);
+}
+
+.confirm-modal-icon {
+  font-size: 3rem;
+  color: var(--citruss-danger);
+  margin-bottom: 12px;
+}
+
+.confirm-modal-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.confirm-modal-msg {
+  font-size: 0.9rem;
+  color: var(--citruss-text-muted);
+  margin-bottom: 24px;
+  line-height: 1.5;
+}
+
+.confirm-modal-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+/* ====================================================
+   SUCCESS RESULT CARD
+   ==================================================== */
+.result-card {
+  display: flex;
+  align-items: center;
+  gap: var(--citruss-spacing-md);
+  padding: var(--citruss-spacing-md) var(--citruss-spacing-lg);
+  background: rgba(67, 217, 109, 0.06);
+  border: 1px solid rgba(67, 217, 109, 0.2);
+  border-radius: var(--citruss-radius-md);
+  animation: fadeIn 0.4s var(--citruss-spring-bezier);
+}
+
+.result-card .result-icon {
+  font-size: 2rem;
+  color: var(--citruss-lime);
+  flex-shrink: 0;
+}
+
+.result-card .result-info {
+  flex-grow: 1;
+  min-width: 0;
+}
+
+.result-card .result-name {
+  font-weight: 700;
+  font-size: 0.95rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.result-card .result-meta {
+  font-size: 0.8rem;
+  color: var(--citruss-text-muted);
+}
+
+.result-card .result-actions {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+#result-card-container {
+  margin-top: var(--citruss-spacing-md);
+}
+
+/* keyboard shortcut hint chip */
+.kbd-hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.75rem;
+  color: var(--citruss-text-muted);
+  opacity: 0.7;
+}
+
+.kbd {
+  display: inline-block;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 4px;
+  padding: 1px 6px;
+  font-size: 0.72rem;
+  font-family: monospace;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+
+[data-theme="light"] .kbd {
+  background: rgba(0,0,0,0.06);
+  border-color: rgba(0,0,0,0.12);
 }

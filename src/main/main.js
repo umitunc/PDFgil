@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, dialog } = require('electron');
+const { app, BrowserWindow, ipcMain, dialog, shell } = require('electron');
 const path = require('path');
 const fs = require('fs');
 const os = require('os');
@@ -181,6 +181,26 @@ ipcMain.handle('pdf:rotate', async (event, filePath, rotationMap, outputPath) =>
 ipcMain.handle('pdf:compress', async (event, filePath, profile, outputPath) => {
   try {
     return await pdfServices.compressPDF(filePath, profile, outputPath);
+  } catch (err) {
+    return { success: false, error: err.message };
+  }
+});
+
+// Open file with default application
+ipcMain.handle('shell:open-path', async (event, filePath) => {
+  try {
+    await shell.openPath(filePath);
+    return { success: true };
+  } catch (err) {
+    return { success: false, error: err.message };
+  }
+});
+
+// Show file in system file explorer
+ipcMain.handle('shell:show-item-in-folder', async (event, filePath) => {
+  try {
+    shell.showItemInFolder(filePath);
+    return { success: true };
   } catch (err) {
     return { success: false, error: err.message };
   }

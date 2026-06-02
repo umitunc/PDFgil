@@ -67,15 +67,23 @@
       <!-- Merge Module Section -->
       <section id="sec-merge" class="module-section active">
         <div class="citruss-card p-lg">
-          <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: var(--citruss-spacing-md);">
-            <div>
-              <h3>📂 Merge PDFs</h3>
-              <p class="text-muted">Upload multiple PDF files, arrange their order, and merge them into a single PDF file.</p>
+          <div style="display: flex; justify-content: space-between; align-items: center; gap: var(--citruss-spacing-md);">
+            <div style="display:flex; align-items:center; gap: 10px; flex-wrap: wrap;">
+              <h3 style="margin:0;">📂 Merge PDFs</h3>
+              <span class="file-count-badge d-none" id="merge-file-count">
+                <span class="material-symbols-rounded" style="font-size:0.9rem;">description</span>
+                <span id="merge-file-count-text">0 files</span>
+              </span>
             </div>
-            <!-- Add File(s) Button (visible only when files are selected) -->
-            <button class="citruss-btn btn-primary btn-sm d-none" id="btn-merge-add-more">
-              <span class="material-symbols-rounded">add_circle</span> Add File(s)
-            </button>
+            <div style="display:flex; align-items:center; gap: 8px;">
+              <span class="kbd-hint d-none" id="merge-kbd-hint">
+                <kbd class="kbd">Ctrl</kbd>+<kbd class="kbd">Enter</kbd> to merge
+              </span>
+              <!-- Add File(s) Button (visible only when files are selected) -->
+              <button class="citruss-btn btn-primary btn-sm d-none" id="btn-merge-add-more">
+                <span class="material-symbols-rounded">add_circle</span> Add File(s)
+              </button>
+            </div>
           </div>
 
           <!-- Drag & Drop Zone -->
@@ -94,6 +102,9 @@
               </div>
             </div>
           </div>
+
+          <!-- Result card shown after successful operation -->
+          <div id="result-card-container" class="d-none"></div>
         </div>
 
         <!-- Fixed Footer Bar for Merge Options & Actions -->
@@ -286,6 +297,26 @@
       </div>
 
     </main>
+  </div>
+
+  <!-- Confirm Dialog Modal -->
+  <div class="confirm-modal d-none" id="confirm-modal">
+    <div class="confirm-modal-backdrop" id="confirm-backdrop"></div>
+    <div class="confirm-modal-box">
+      <div class="confirm-modal-icon">
+        <span class="material-symbols-rounded" id="confirm-icon">warning</span>
+      </div>
+      <div class="confirm-modal-title" id="confirm-title">Are you sure?</div>
+      <div class="confirm-modal-msg" id="confirm-msg">This action cannot be undone.</div>
+      <div class="confirm-modal-actions">
+        <button class="citruss-btn btn-danger" id="confirm-ok">
+          <span class="material-symbols-rounded">delete</span> Clear
+        </button>
+        <button class="citruss-btn" id="confirm-cancel">
+          <span class="material-symbols-rounded">close</span> Cancel
+        </button>
+      </div>
+    </div>
   </div>
 
   <!-- PDF.js CDN -->
