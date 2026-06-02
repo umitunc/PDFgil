@@ -205,6 +205,30 @@ function setupDropzones() {
       handleDroppedFiles(type, filePaths);
     });
   });
+
+  // Global window drag & drop event prevention & routing
+  // Prevents Electron from loading/navigating to the PDF file (which resets/reloads the application)
+  window.addEventListener('dragover', (e) => {
+    e.preventDefault();
+  }, false);
+
+  window.addEventListener('drop', async (e) => {
+    e.preventDefault();
+    
+    // Find which tab/module is currently active
+    const activeTab = document.querySelector('#module-tabs button.active');
+    if (!activeTab) return;
+    const type = activeTab.dataset.tab;
+    
+    const files = Array.from(e.dataTransfer.files).filter(f => f.path && f.path.endsWith('.pdf'));
+    if (files.length === 0) {
+      showToast('Please drag and drop PDF files only.', 'error');
+      return;
+    }
+    
+    const filePaths = files.map(f => f.path);
+    handleDroppedFiles(type, filePaths);
+  }, false);
 }
 
 // Handle drops based on tab context
