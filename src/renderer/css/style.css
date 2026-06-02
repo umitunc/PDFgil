@@ -302,8 +302,42 @@ body.citruss-dashboard-shell::before {
 header.citruss-navbar {
   -webkit-app-region: drag; /* Allows dragging the window */
   user-select: none;
-  padding-top: 12px;
-  padding-bottom: 12px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 56px;
+  z-index: 1000;
+  padding: 0 16px 0 0;
+  margin: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--citruss-navbar-bg, rgba(15, 23, 42, 0.4));
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--citruss-glass-border);
+}
+
+main.citruss-dashboard-content {
+  margin-top: 56px; /* Offset for fixed header */
+}
+
+.logo-text {
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  transition: color 0.3s ease;
+}
+
+/* Brand text theme coloring */
+html:not([data-theme="light"]) .logo-text,
+[data-theme="dark"] .logo-text {
+  color: #ffffff !important;
+}
+
+[data-theme="light"] .logo-text {
+  color: #d84b00 !important;
 }
 
 /* Stop dragging on interactive components so they are clickable */
@@ -359,7 +393,7 @@ header.citruss-navbar {
 
 /* Logo Theme Switch Styles */
 .citruss-logo-area img {
-  height: 42px;
+  height: 100%;
   width: auto;
   display: block;
 }
