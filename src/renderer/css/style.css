@@ -332,7 +332,7 @@ body.citruss-dashboard-shell::before {
 }
 
 /* Frameless window header adjustments */
-header.citruss-navbar {
+.citruss-navbar {
   -webkit-app-region: drag;
   /* Allows dragging the window */
   user-select: none;
@@ -367,7 +367,6 @@ header.citruss-navbar {
 .layout-content-wrapper {
   display: flex;
   flex: 1;
-  overflow: hidden;
   min-height: 0;
   width: 100%;
 }
@@ -598,6 +597,7 @@ html:not([data-theme="light"]) .citruss-logo-area .logo-light,
   from {
     transform: translateY(100%);
   }
+
   to {
     transform: translateY(0);
   }
@@ -691,7 +691,7 @@ html:not([data-theme="light"]) .citruss-logo-area .logo-light,
   height: calc(100% - 86px) !important;
 }
 
-.module-section .citruss-card > .drop-zone {
+.module-section .citruss-card>.drop-zone {
   flex-grow: 1;
   display: flex;
   flex-direction: column;
@@ -699,7 +699,7 @@ html:not([data-theme="light"]) .citruss-logo-area .logo-light,
   margin-bottom: 0 !important;
 }
 
-.module-section .citruss-card > .drop-zone.has-files {
+.module-section .citruss-card>.drop-zone.has-files {
   justify-content: flex-start !important;
 }
 
@@ -712,7 +712,8 @@ html:not([data-theme="light"]) .citruss-logo-area .logo-light,
 
 .pages-gallery {
   flex-grow: 1;
-  max-height: none !important; /* Allow the gallery to stretch fully within the card */
+  max-height: none !important;
+  /* Allow the gallery to stretch fully within the card */
   overflow-y: auto;
 }
 
@@ -755,6 +756,7 @@ html:not([data-theme="light"]) .citruss-logo-area .logo-light,
     opacity: 0;
     transform: scale(0.92) translateY(10px);
   }
+
   to {
     opacity: 1;
     transform: scale(1) translateY(0);
@@ -816,8 +818,15 @@ html:not([data-theme="light"]) .citruss-logo-area .logo-light,
 }
 
 @keyframes badgePop {
-  from { transform: scale(0.7); opacity: 0; }
-  to   { transform: scale(1);   opacity: 1; }
+  from {
+    transform: scale(0.7);
+    opacity: 0;
+  }
+
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 
 /* ====================================================
@@ -833,7 +842,7 @@ html:not([data-theme="light"]) .citruss-logo-area .logo-light,
   display: inline-block;
   width: 14px;
   height: 14px;
-  border: 2px solid rgba(255,255,255,0.3);
+  border: 2px solid rgba(255, 255, 255, 0.3);
   border-top-color: #fff;
   border-radius: 50%;
   animation: spin 0.7s linear infinite;
@@ -842,15 +851,24 @@ html:not([data-theme="light"]) .citruss-logo-area .logo-light,
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* ====================================================
    DROPZONE FLOATING ICON ANIMATION
    ==================================================== */
 @keyframes floatIcon {
-  0%, 100% { transform: translateY(0px); }
-  50%       { transform: translateY(-8px); }
+
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-8px);
+  }
 }
 
 .drop-zone:not(.has-files) .icon-large {
@@ -868,8 +886,13 @@ html:not([data-theme="light"]) .citruss-logo-area .logo-light,
    PAGE CARD — ROTATE BUTTON SPIN ANIMATION
    ==================================================== */
 @keyframes rotatePulse {
-  0%   { transform: rotate(0deg); }
-  100% { transform: rotate(90deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(90deg);
+  }
 }
 
 .page-card .btn-icon.rotating .material-symbols-rounded {
@@ -1026,8 +1049,8 @@ html:not([data-theme="light"]) .citruss-logo-area .logo-light,
 
 .kbd {
   display: inline-block;
-  background: rgba(255,255,255,0.08);
-  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 4px;
   padding: 1px 6px;
   font-size: 0.72rem;
@@ -1037,6 +1060,6 @@ html:not([data-theme="light"]) .citruss-logo-area .logo-light,
 }
 
 [data-theme="light"] .kbd {
-  background: rgba(0,0,0,0.06);
-  border-color: rgba(0,0,0,0.12);
+  background: rgba(0, 0, 0, 0.06);
+  border-color: rgba(0, 0, 0, 0.12);
 }

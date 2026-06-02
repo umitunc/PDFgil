@@ -4,7 +4,7 @@
   "description": "Offline PDF Merger, Splitter, Rotator, and Compressor using CitruSS UI Kit",
   "main": "src/main/main.js",
   "scripts": {
-    "start": "electron .",
+    "start": "electronmon .",
     "build": "electron-builder --win",
     "test": "echo \"Error: no test specified\" && exit 0"
   },
@@ -24,7 +24,8 @@
   },
   "devDependencies": {
     "electron": "^30.0.0",
-    "electron-builder": "^24.13.3"
+    "electron-builder": "^24.13.3",
+    "electronmon": "^2.0.4"
   },
   "build": {
     "appId": "com.truncgil.pdfgil",
