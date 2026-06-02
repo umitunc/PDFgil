@@ -12,6 +12,7 @@ function createWindow() {
     height: 720,
     minWidth: 800,
     minHeight: 600,
+    icon: path.join(__dirname, '../renderer/images/pdfgil-icon.png'),
     webPreferences: {
       preload: path.join(__dirname, '../preload/preload.js'),
       contextIsolation: true,

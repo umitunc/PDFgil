@@ -5,6 +5,7 @@
   "main": "src/main/main.js",
   "scripts": {
     "start": "electron .",
+    "build": "electron-builder --win",
     "test": "echo \"Error: no test specified\" && exit 0"
   },
   "keywords": [
@@ -16,12 +17,43 @@
     "compress",
     "electron"
   ],
-  "author": "",
+  "author": "Trunçgil",
   "license": "ISC",
   "dependencies": {
     "pdf-lib": "*"
   },
   "devDependencies": {
-    "electron": "^30.0.0"
+    "electron": "^30.0.0",
+    "electron-builder": "^24.13.3"
+  },
+  "build": {
+    "appId": "com.truncgil.pdfgil",
+    "productName": "PDFgil",
+    "copyright": "Copyright © 2026 Trunçgil",
+    "directories": {
+      "output": "dist"
+    },
+    "win": {
+      "icon": "build/icon.ico",
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "PDFgil"
+    },
+    "files": [
+      "src/**/*",
+      "package.json"
+    ]
   }
 }

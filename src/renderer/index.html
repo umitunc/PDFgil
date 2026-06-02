@@ -1,28 +1,33 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>PDFgil - Desktop PDF Editor</title>
-  
+
   <!-- CitruSS Vibrant Frosted Glassmorphism Stylesheet -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/umitunc/CitruSS/dist/citruss.css" />
-  
+
   <!-- Material Symbols for Premium Icons -->
-  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet" />
-  
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0"
+    rel="stylesheet" />
+
   <!-- Custom App Styles -->
   <link rel="stylesheet" href="css/style.css" />
 </head>
+
 <body class="citruss-dashboard-shell">
 
   <div class="citruss-dashboard-main">
     <!-- Header Navbar -->
     <header class="citruss-navbar">
-      <div class="citruss-logo-area">
-        🍊 PDF<span>gil</span>
+      <div class="citruss-logo-area" style="display: flex; align-items: center; gap: 10px;">
+        <img src="images/pdfgil-icon.png" alt="PDFgil Logo" style="height: 36pix; width: 36px;" />
+        <span
+          style="font-size: 1.5rem; font-weight: 800; background: linear-gradient(135deg, var(--citruss-orange), #ff9f43); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: 0.5px;">PDFgil</span>
       </div>
-      
+
       <!-- Module Navigation Tab Buttons -->
       <div class="citruss-btn-group" id="module-tabs">
         <button class="citruss-btn active" data-tab="merge">
@@ -38,7 +43,7 @@
           <span class="material-symbols-rounded">compress</span> Compress
         </button>
       </div>
-      
+
       <div class="interactive header-actions">
         <button class="citruss-btn btn-sm btn-icon" id="theme-toggle" title="Toggle Dark/Light Mode">
           <span class="material-symbols-rounded" id="theme-icon">light_mode</span>
@@ -59,13 +64,14 @@
 
     <!-- Main Content Container -->
     <main class="citruss-dashboard-content">
-      
+
       <!-- Merge Module Section -->
       <section id="sec-merge" class="module-section active">
         <div class="citruss-card p-lg">
           <h3>📂 Merge PDFs</h3>
-          <p class="text-muted">Upload multiple PDF files, arrange their order, and merge them into a single PDF file.</p>
-          
+          <p class="text-muted">Upload multiple PDF files, arrange their order, and merge them into a single PDF file.
+          </p>
+
           <!-- Drag & Drop Zone -->
           <div class="drop-zone mt-md" id="merge-dropzone">
             <span class="material-symbols-rounded icon-large">cloud_upload</span>
@@ -98,7 +104,7 @@
                 </label>
               </div>
             </div>
-            
+
             <div class="action-bar mt-lg">
               <button class="citruss-btn btn-success" id="btn-merge-action">
                 <span class="material-symbols-rounded">merge</span> Merge PDFs
@@ -113,8 +119,9 @@
       <section id="sec-split" class="module-section">
         <div class="citruss-card p-lg">
           <h3>✂️ Split PDF</h3>
-          <p class="text-muted">Upload a PDF file, extract all pages individually, or select a specific range to save.</p>
-          
+          <p class="text-muted">Upload a PDF file, extract all pages individually, or select a specific range to save.
+          </p>
+
           <div class="drop-zone mt-md" id="split-dropzone">
             <span class="material-symbols-rounded icon-large">cloud_upload</span>
             <p>Drag & drop a PDF file here or click to select</p>
@@ -165,7 +172,7 @@
         <div class="citruss-card p-lg">
           <h3>🔄 Rotate PDF</h3>
           <p class="text-muted">Upload a PDF file, visually rotate specific pages, and save the result.</p>
-          
+
           <div class="drop-zone mt-md" id="rotate-dropzone">
             <span class="material-symbols-rounded icon-large">cloud_upload</span>
             <p>Drag & drop a PDF file here or click to select</p>
@@ -201,7 +208,7 @@
         <div class="citruss-card p-lg">
           <h3>📉 Compress PDF</h3>
           <p class="text-muted">Reduce the file size of your PDF document for email attachments or web sharing.</p>
-          
+
           <div class="drop-zone mt-md" id="compress-dropzone">
             <span class="material-symbols-rounded icon-large">cloud_upload</span>
             <p>Drag & drop a PDF file here or click to select</p>
@@ -232,7 +239,8 @@
                   <input type="radio" name="compress-profile" value="screen">
                   <div>
                     <strong>Aggressive Compression (96 DPI)</strong>
-                    <p class="text-muted text-sm">Maximum file size reduction, ideal for strict email attachment limits.</p>
+                    <p class="text-muted text-sm">Maximum file size reduction, ideal for strict email attachment limits.
+                    </p>
                   </div>
                 </label>
               </div>
@@ -240,7 +248,8 @@
               <!-- Information status if Ghostscript is missing (shows as info) -->
               <div class="gs-status-badge mt-md" id="gs-info-box">
                 <span class="material-symbols-rounded text-warning">info</span>
-                <p class="text-sm">Note: Advanced image downsampling is applied when Ghostscript is installed. Otherwise, a basic native optimization will be used.</p>
+                <p class="text-sm">Note: Advanced image downsampling is applied when Ghostscript is installed.
+                  Otherwise, a basic native optimization will be used.</p>
               </div>
             </div>
 
@@ -267,12 +276,13 @@
 
   <!-- PDF.js CDN -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-  
+
   <!-- CitruSS Interactive Vanilla JS Companion Script -->
   <script src="https://cdn.jsdelivr.net/gh/umitunc/CitruSS/dist/citruss.min.js"></script>
-  
+
   <!-- Application Logic -->
   <script src="js/preview.js"></script>
   <script src="js/app.js"></script>
 </body>
+
 </html>

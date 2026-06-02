@@ -12,11 +12,9 @@
 
 @keyframes fadeIn {
   from {
-    opacity: 0;
     transform: translateY(12px);
   }
   to {
-    opacity: 1;
     transform: translateY(0);
   }
 }
@@ -357,4 +355,37 @@ header.citruss-navbar {
 
 .window-controls .material-symbols-rounded {
   font-size: 16px !important;
+}
+
+/* Logo Theme Switch Styles */
+.citruss-logo-area img {
+  height: 42px;
+  width: auto;
+  display: block;
+}
+
+/* Light mode overrides */
+[data-theme="light"] .citruss-logo-area .logo-dark {
+  display: none !important;
+}
+[data-theme="light"] .citruss-logo-area .logo-light {
+  display: block !important;
+}
+
+[data-theme="light"] .citruss-btn-group .citruss-btn.active {
+  background: #d84b00 !important;
+  color: #ffffff !important;
+  border-color: #d84b00 !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 2px 8px rgba(216, 75, 0, 0.3) !important;
+}
+
+/* Dark mode overrides / default */
+html:not([data-theme="light"]) .citruss-logo-area .logo-dark,
+[data-theme="dark"] .citruss-logo-area .logo-dark {
+  display: block !important;
+}
+html:not([data-theme="light"]) .citruss-logo-area .logo-light,
+[data-theme="dark"] .citruss-logo-area .logo-light {
+  display: none !important;
 }
