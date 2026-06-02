@@ -96,6 +96,7 @@ function setupTheme() {
   });
 }
 
+// --- Theme Icon Update ---
 function updateThemeIcon(theme) {
   if (theme === 'dark') {
     elements.themeIcon.textContent = 'light_mode';
@@ -180,7 +181,7 @@ function setupDropzones() {
       
       const files = Array.from(e.dataTransfer.files).filter(f => f.path && f.path.endsWith('.pdf'));
       if (files.length === 0) {
-        showToast('Lütfen sadece PDF dosyalarını sürükleyin.', 'error');
+        showToast('Please drag and drop PDF files only.', 'error');
         return;
       }
       
@@ -223,7 +224,7 @@ function formatBytes(bytes) {
 
 // --- Merge Tab Logic ---
 async function selectMergeFiles() {
-  const filePaths = await window.pdfgilAPI.selectFiles({ title: 'Birleştirilecek PDF Dosyalarını Seçin', multi: true });
+  const filePaths = await window.pdfgilAPI.selectFiles({ title: 'Select PDF Files to Merge', multi: true });
   if (filePaths) {
     handleDroppedFiles('merge', filePaths);
   }
@@ -250,13 +251,13 @@ function renderMergeList() {
         ${filename}
       </div>
       <div class="file-item-actions">
-        <button class="citruss-btn btn-sm btn-icon" onclick="moveMergeItem(${index}, -1)" ${index === 0 ? 'disabled' : ''} title="Sola Taşı">
+        <button class="citruss-btn btn-sm btn-icon" onclick="moveMergeItem(${index}, -1)" ${index === 0 ? 'disabled' : ''} title="Move Left">
           <span class="material-symbols-rounded">arrow_back</span>
         </button>
-        <button class="citruss-btn btn-sm btn-icon" onclick="moveMergeItem(${index}, 1)" ${index === state.mergeFiles.length - 1 ? 'disabled' : ''} title="Sağa Taşı">
+        <button class="citruss-btn btn-sm btn-icon" onclick="moveMergeItem(${index}, 1)" ${index === state.mergeFiles.length - 1 ? 'disabled' : ''} title="Move Right">
           <span class="material-symbols-rounded">arrow_forward</span>
         </button>
-        <button class="citruss-btn btn-sm btn-icon btn-danger" onclick="removeMergeItem(${index})" title="Çıkar">
+        <button class="citruss-btn btn-sm btn-icon btn-danger" onclick="removeMergeItem(${index})" title="Remove">
           <span class="material-symbols-rounded">close</span>
         </button>
       </div>
@@ -286,7 +287,7 @@ window.removeMergeItem = (index) => {
 
 // --- Split Tab Logic ---
 async function selectSplitFile() {
-  const filePaths = await window.pdfgilAPI.selectFiles({ title: 'Ayırılacak PDF Dosyasını Seçin', multi: false });
+  const filePaths = await window.pdfgilAPI.selectFiles({ title: 'Select PDF File to Split', multi: false });
   if (filePaths && filePaths.length > 0) {
     loadSplitFile(filePaths[0]);
   }
@@ -294,12 +295,12 @@ async function selectSplitFile() {
 
 async function loadSplitFile(filePath) {
   try {
-    showToast('Dosya yükleniyor...', 'loading');
+    showToast('Loading file...', 'loading');
     const metadata = await window.pdfgilAPI.getMetadata(filePath);
     state.splitFile = filePath;
     
     elements.splitFileName.textContent = filePath.split(/[\\/]/).pop();
-    elements.splitFileMeta.textContent = `${metadata.pageCount} sayfa - ${formatBytes(metadata.sizeBytes)}`;
+    elements.splitFileMeta.textContent = `${metadata.pageCount} pages - ${formatBytes(metadata.sizeBytes)}`;
     
     elements.splitDetailsContainer.classList.remove('d-none');
     elements.splitDropzone.classList.add('d-none');
@@ -311,7 +312,7 @@ async function loadSplitFile(filePath) {
 
 // --- Rotate Tab Logic ---
 async function selectRotateFile() {
-  const filePaths = await window.pdfgilAPI.selectFiles({ title: 'Döndürülecek PDF Dosyasını Seçin', multi: false });
+  const filePaths = await window.pdfgilAPI.selectFiles({ title: 'Select PDF File to Rotate', multi: false });
   if (filePaths && filePaths.length > 0) {
     loadRotateFile(filePaths[0]);
   }
@@ -319,13 +320,13 @@ async function selectRotateFile() {
 
 async function loadRotateFile(filePath) {
   try {
-    showToast('Önizlemeler hazırlanıyor...', 'loading');
+    showToast('Preparing previews...', 'loading');
     const metadata = await window.pdfgilAPI.getMetadata(filePath);
     state.rotateFile = filePath;
     state.rotateState = {}; // reset
     
     elements.rotateFileName.textContent = filePath.split(/[\\/]/).pop();
-    elements.rotateFileMeta.textContent = `${metadata.pageCount} sayfa`;
+    elements.rotateFileMeta.textContent = `${metadata.pageCount} pages`;
     
     elements.rotateGallery.innerHTML = '';
     elements.rotateDetailsContainer.classList.remove('d-none');
@@ -344,8 +345,8 @@ async function loadRotateFile(filePath) {
         <div class="page-thumbnail-container">
           <canvas class="page-thumbnail-canvas rot-0" id="canvas-page-${i}"></canvas>
         </div>
-        <div class="page-number-badge">Sayfa ${i + 1}</div>
-        <button class="citruss-btn btn-sm btn-icon" onclick="rotatePage(${i})" title="90 Derece Döndür">
+        <div class="page-number-badge">Page ${i + 1}</div>
+        <button class="citruss-btn btn-sm btn-icon" onclick="rotatePage(${i})" title="Rotate 90 Degrees">
           <span class="material-symbols-rounded">rotate_right</span>
         </button>
       `;
@@ -377,7 +378,7 @@ window.rotatePage = (pageIndex) => {
 
 // --- Compress Tab Logic ---
 async function selectCompressFile() {
-  const filePaths = await window.pdfgilAPI.selectFiles({ title: 'Sıkıştırılacak PDF Dosyasını Seçin', multi: false });
+  const filePaths = await window.pdfgilAPI.selectFiles({ title: 'Select PDF File to Compress', multi: false });
   if (filePaths && filePaths.length > 0) {
     loadCompressFile(filePaths[0]);
   }
@@ -385,12 +386,12 @@ async function selectCompressFile() {
 
 async function loadCompressFile(filePath) {
   try {
-    showToast('Dosya yükleniyor...', 'loading');
+    showToast('Loading file...', 'loading');
     const metadata = await window.pdfgilAPI.getMetadata(filePath);
     state.compressFile = filePath;
     
     elements.compressFileName.textContent = filePath.split(/[\\/]/).pop();
-    elements.compressFileMeta.textContent = `Orijinal Boyut: ${formatBytes(metadata.sizeBytes)}`;
+    elements.compressFileMeta.textContent = `Original Size: ${formatBytes(metadata.sizeBytes)}`;
     
     elements.compressDetailsContainer.classList.remove('d-none');
     elements.compressDropzone.classList.add('d-none');
@@ -405,32 +406,32 @@ function setupActions() {
   // Merge Action
   elements.btnMergeAction.addEventListener('click', async () => {
     if (state.mergeFiles.length < 2) {
-      showToast('Birleştirmek için en az 2 dosya seçmelisiniz.', 'error');
+      showToast('You must select at least 2 files to merge.', 'error');
       return;
     }
     
     const profile = document.querySelector('input[name="merge-compress-profile"]:checked').value;
     
     const outputPath = await window.pdfgilAPI.selectSavePath({
-      title: 'Birleştirilen PDF dosyasını kaydet',
-      defaultPath: 'birlesmis_belge.pdf'
+      title: 'Save Merged PDF file',
+      defaultPath: 'merged_document.pdf'
     });
     
     if (!outputPath) return;
     
-    showToast('PDF dosyaları birleştiriliyor...', 'loading');
+    showToast('Merging PDF files...', 'loading');
     const result = await window.pdfgilAPI.mergePDFs(state.mergeFiles, outputPath, { compressProfile: profile });
     
     if (result.success) {
       const msg = result.fallback
-        ? `Birleştirme tamamlandı! ${result.message}`
-        : 'Birleştirme işlemi başarıyla tamamlandı!';
+        ? `Merge completed! ${result.message}`
+        : 'Merge process completed successfully!';
       showToast(msg, result.fallback ? 'warning' : 'success');
       // Reset list
       state.mergeFiles = [];
       renderMergeList();
     } else {
-      showToast(`Hata oluştu: ${result.error}`, 'error');
+      showToast(`Error occurred: ${result.error}`, 'error');
     }
   });
 
@@ -440,7 +441,6 @@ function setupActions() {
   });
 
   // Split Action
-  // Radios toggling the custom range display
   const splitRadios = document.querySelectorAll('input[name="split-mode"]');
   splitRadios.forEach(radio => {
     radio.addEventListener('change', () => {
@@ -462,14 +462,14 @@ function setupActions() {
     if (mode === 'range') {
       const rangeVal = elements.splitRangeInput.value.trim();
       if (!rangeVal) {
-        showToast('Lütfen sayfa aralığını girin (örn: 2-5).', 'error');
+        showToast('Please enter the page range (e.g. 2-5).', 'error');
         return;
       }
       options.range = rangeVal;
       
       outputPath = await window.pdfgilAPI.selectSavePath({
-        title: 'Ayrılan sayfaları kaydet',
-        defaultPath: 'ayrilmis_belge.pdf'
+        title: 'Save split pages',
+        defaultPath: 'split_document.pdf'
       });
       if (!outputPath) return;
     } else {
@@ -478,14 +478,14 @@ function setupActions() {
       if (!outputPath) return;
     }
     
-    showToast('PDF ayrılıyor...', 'loading');
+    showToast('Splitting PDF...', 'loading');
     const result = await window.pdfgilAPI.splitPDF(state.splitFile, options, outputPath);
     
     if (result.success) {
-      showToast('Ayırma işlemi başarıyla tamamlandı!', 'success');
+      showToast('Split process completed successfully!', 'success');
       clearSplitSelection();
     } else {
-      showToast(`Hata oluştu: ${result.error}`, 'error');
+      showToast(`Error occurred: ${result.error}`, 'error');
     }
   });
 
@@ -503,20 +503,20 @@ function setupActions() {
     if (!state.rotateFile) return;
     
     const outputPath = await window.pdfgilAPI.selectSavePath({
-      title: 'Döndürülen PDF dosyasını kaydet',
-      defaultPath: 'dondurulmus_belge.pdf'
+      title: 'Save rotated PDF file',
+      defaultPath: 'rotated_document.pdf'
     });
     
     if (!outputPath) return;
     
-    showToast('Döndürme işlemi uygulanıyor...', 'loading');
+    showToast('Applying rotations...', 'loading');
     const result = await window.pdfgilAPI.rotatePDF(state.rotateFile, state.rotateState, outputPath);
     
     if (result.success) {
-      showToast('Döndürme işlemi başarıyla tamamlandı!', 'success');
+      showToast('Rotations saved successfully!', 'success');
       clearRotateSelection();
     } else {
-      showToast(`Hata oluştu: ${result.error}`, 'error');
+      showToast(`Error occurred: ${result.error}`, 'error');
     }
   });
 
@@ -538,23 +538,23 @@ function setupActions() {
     const profile = document.querySelector('input[name="compress-profile"]:checked').value;
     
     const outputPath = await window.pdfgilAPI.selectSavePath({
-      title: 'Sıkıştırılmış PDF dosyasını kaydet',
-      defaultPath: 'sikistirilmis_belge.pdf'
+      title: 'Save compressed PDF file',
+      defaultPath: 'compressed_document.pdf'
     });
     
     if (!outputPath) return;
     
-    showToast('PDF sıkıştırılıyor...', 'loading');
+    showToast('Compressing PDF...', 'loading');
     const result = await window.pdfgilAPI.compressPDF(state.compressFile, profile, outputPath);
     
     if (result.success) {
       const msg = result.fallback 
         ? `${result.message}` 
-        : 'Sıkıştırma işlemi başarıyla tamamlandı!';
+        : 'Compression process completed successfully!';
       showToast(msg, result.fallback ? 'warning' : 'success');
       clearCompressSelection();
     } else {
-      showToast(`Hata oluştu: ${result.error}`, 'error');
+      showToast(`Error occurred: ${result.error}`, 'error');
     }
   });
 

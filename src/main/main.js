@@ -18,7 +18,7 @@ function createWindow() {
       nodeIntegration: false
     },
     frame: true, // Titlebar included
-    title: 'PDFgil - Masaüstü PDF Editörü'
+    title: 'PDFgil - Desktop PDF Editor'
   });
 
   // Load the index.html from renderer folder
@@ -48,7 +48,7 @@ app.on('activate', function () {
 // Select PDF files
 ipcMain.handle('pdf:select-files', async (event, options = {}) => {
   const result = await dialog.showOpenDialog(mainWindow, {
-    title: options.title || 'PDF Dosyalarını Seçin',
+    title: options.title || 'Select PDF Files',
     filters: [
       { name: 'PDF Documents', extensions: ['pdf'] }
     ],
@@ -65,8 +65,8 @@ ipcMain.handle('pdf:select-files', async (event, options = {}) => {
 // Select save path for saving PDF outputs
 ipcMain.handle('pdf:select-save-path', async (event, options = {}) => {
   const result = await dialog.showSaveDialog(mainWindow, {
-    title: options.title || 'PDF Dosyasını Kaydet',
-    defaultPath: options.defaultPath || 'belge_duzenlenmis.pdf',
+    title: options.title || 'Save PDF File',
+    defaultPath: options.defaultPath || 'document_edited.pdf',
     filters: [
       { name: 'PDF Documents', extensions: ['pdf'] }
     ]
@@ -82,7 +82,7 @@ ipcMain.handle('pdf:select-save-path', async (event, options = {}) => {
 // Select folder (for Split outputs)
 ipcMain.handle('pdf:select-folder', async () => {
   const result = await dialog.showOpenDialog(mainWindow, {
-    title: 'Çıktı Klasörünü Seçin',
+    title: 'Select Output Directory',
     properties: ['openDirectory']
   });
 
@@ -104,7 +104,7 @@ ipcMain.handle('pdf:read-bytes', async (event, filePath) => {
     const bytes = fs.readFileSync(filePath);
     return bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength);
   } catch (err) {
-    throw new Error(`Dosya okunamadı: ${err.message}`);
+    throw new Error(`Could not read file: ${err.message}`);
   }
 });
 

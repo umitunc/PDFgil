@@ -67,7 +67,7 @@ async function splitPDF(filePath, options, outputPath) {
     let end = parts[1] || start;
 
     if (isNaN(start) || start < 1 || start > totalPages || end < start || end > totalPages) {
-      throw new Error(`Geçersiz sayfa aralığı. Toplam sayfa sayısı: ${totalPages}`);
+      throw new Error(`Invalid page range. Total page count: ${totalPages}`);
     }
 
     const newPdf = await PDFDocument.create();
@@ -94,13 +94,13 @@ async function splitPDF(filePath, options, outputPath) {
       newPdf.addPage(copiedPage);
       const newPdfBytes = await newPdf.save();
       
-      const fileOutPath = path.join(outputPath, `${baseName}_sayfa_${i + 1}.pdf`);
+      const fileOutPath = path.join(outputPath, `${baseName}_page_${i + 1}.pdf`);
       fs.writeFileSync(fileOutPath, newPdfBytes);
       createdFiles.push(fileOutPath);
     }
     return { success: true, files: createdFiles };
   } else {
-    throw new Error('Bilinmeyen ayırma tipi');
+    throw new Error('Unknown split type');
   }
 }
 
@@ -146,7 +146,7 @@ async function compressPDF(filePath, profile, outputPath) {
       success: true, 
       outputPath, 
       fallback: true,
-      message: 'Ghostscript bulunamadı. Temel seviyede PDF sıkıştırması uygulandı.' 
+      message: 'Ghostscript not found. Basic PDF compression applied.' 
     };
   }
 
@@ -175,7 +175,7 @@ async function compressPDF(filePath, profile, outputPath) {
       if (code === 0) {
         resolve({ success: true, outputPath, fallback: false });
       } else {
-        reject(new Error(`Ghostscript Hatası (kod ${code}): ${errorMsg}`));
+        reject(new Error(`Ghostscript Error (code ${code}): ${errorMsg}`));
       }
     });
   });
@@ -195,7 +195,7 @@ async function getPDFMetadata(filePath) {
       sizeBytes: fs.statSync(filePath).size
     };
   } catch (err) {
-    throw new Error(`PDF yüklenemedi: ${err.message}`);
+    throw new Error(`Could not load PDF: ${err.message}`);
   }
 }
 
