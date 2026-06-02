@@ -72,11 +72,21 @@ function checkGhostscript() {
 async function mergePDFs(filePaths, outputPath) {
   const mergedPdf = await PDFDocument.create();
   
-  for (const filePath of filePaths) {
+  for (const fileObj of filePaths) {
+    const filePath = typeof fileObj === 'string' ? fileObj : fileObj.path;
+    const rotation = typeof fileObj === 'string' ? 0 : (fileObj.rotation || 0);
+    
     const pdfBytes = fs.readFileSync(filePath);
     const pdf = await PDFDocument.load(pdfBytes);
     const copiedPages = await mergedPdf.copyPages(pdf, pdf.getPageIndices());
-    copiedPages.forEach((page) => mergedPdf.addPage(page));
+    
+    copiedPages.forEach((page) => {
+      if (rotation !== 0) {
+        const currentRotation = page.getRotation().angle;
+        page.setRotation((currentRotation + rotation) % 360);
+      }
+      mergedPdf.addPage(page);
+    });
   }
   
   const mergedPdfBytes = await mergedPdf.save();

@@ -235,8 +235,8 @@ function setupDropzones() {
 async function handleDroppedFiles(type, paths) {
   if (type === 'merge') {
     for (const path of paths) {
-      if (!state.mergeFiles.includes(path)) {
-        state.mergeFiles.push(path);
+      if (!state.mergeFiles.some(f => f.path === path)) {
+        state.mergeFiles.push({ path: path, rotation: 0 });
       }
     }
     renderMergeList();
@@ -279,13 +279,15 @@ function renderMergeList() {
   elements.mergeListContainer.classList.remove('d-none');
   elements.mergePreviewGrid.innerHTML = '';
   
-  state.mergeFiles.forEach((file, index) => {
+  state.mergeFiles.forEach((fileObj, index) => {
+    const file = fileObj.path;
+    const rotation = fileObj.rotation || 0;
     const filename = file.split(/[\\/]/).pop();
     const card = document.createElement('div');
     card.className = 'page-card';
     card.innerHTML = `
       <div class="page-thumbnail-container">
-        <canvas class="page-thumbnail-canvas rot-0" id="merge-canvas-${index}"></canvas>
+        <canvas class="page-thumbnail-canvas rot-${rotation}" id="merge-canvas-${index}"></canvas>
       </div>
       <div class="page-number-badge" style="text-align: center; max-width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${filename}">
         ${filename}
@@ -293,6 +295,9 @@ function renderMergeList() {
       <div class="file-item-actions">
         <button class="citruss-btn btn-sm btn-icon" onclick="moveMergeItem(${index}, -1)" ${index === 0 ? 'disabled' : ''} title="Move Left">
           <span class="material-symbols-rounded">arrow_back</span>
+        </button>
+        <button class="citruss-btn btn-sm btn-icon" onclick="rotateMergeItem(${index})" title="Rotate 90 Degrees">
+          <span class="material-symbols-rounded">rotate_right</span>
         </button>
         <button class="citruss-btn btn-sm btn-icon" onclick="moveMergeItem(${index}, 1)" ${index === state.mergeFiles.length - 1 ? 'disabled' : ''} title="Move Right">
           <span class="material-symbols-rounded">arrow_forward</span>
@@ -310,6 +315,14 @@ function renderMergeList() {
   });
 }
 
+window.rotateMergeItem = (index) => {
+  if (index >= 0 && index < state.mergeFiles.length) {
+    const fileObj = state.mergeFiles[index];
+    fileObj.rotation = (fileObj.rotation + 90) % 360;
+    renderMergeList();
+  }
+};
+
 window.moveMergeItem = (index, direction) => {
   const newIndex = index + direction;
   if (newIndex >= 0 && newIndex < state.mergeFiles.length) {
@@ -321,8 +334,10 @@ window.moveMergeItem = (index, direction) => {
 };
 
 window.removeMergeItem = (index) => {
-  state.mergeFiles.splice(index, 1);
-  renderMergeList();
+  if (index >= 0 && index < state.mergeFiles.length) {
+    state.mergeFiles.splice(index, 1);
+    renderMergeList();
+  }
 };
 
 // --- Split Tab Logic ---
