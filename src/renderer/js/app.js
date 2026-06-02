@@ -180,8 +180,9 @@ let confirmCallback = null;
 
 function setupConfirmModal() {
   document.getElementById('confirm-ok').addEventListener('click', () => {
+    const cb = confirmCallback; // capture before closeConfirm nullifies it
     closeConfirm();
-    if (typeof confirmCallback === 'function') confirmCallback();
+    if (typeof cb === 'function') cb();
   });
   document.getElementById('confirm-cancel').addEventListener('click', closeConfirm);
   document.getElementById('confirm-backdrop').addEventListener('click', closeConfirm);
