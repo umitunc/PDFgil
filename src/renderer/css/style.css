@@ -1,0 +1,267 @@
+/* PDFgil - Application Stylesheet */
+
+/* Module Management */
+.module-section {
+  display: none;
+  animation: fadeIn 0.4s var(--citruss-spring-bezier);
+}
+
+.module-section.active {
+  display: block;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Drop Zone Styles */
+.drop-zone {
+  border: 2px dashed var(--citruss-glass-border);
+  border-radius: var(--citruss-radius-lg);
+  padding: var(--citruss-spacing-xl) var(--citruss-spacing-md);
+  text-align: center;
+  background: rgba(255, 255, 255, 0.02);
+  transition: all 0.3s var(--citruss-spring-bezier);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--citruss-spacing-xs);
+}
+
+.drop-zone:hover, .drop-zone.dragover {
+  border-color: var(--citruss-orange);
+  background: rgba(255, 107, 0, 0.04);
+  box-shadow: 0 0 20px rgba(255, 107, 0, 0.1);
+}
+
+.icon-large {
+  font-size: 3.5rem;
+  color: var(--citruss-text-muted);
+  transition: color 0.3s ease;
+}
+
+.drop-zone:hover .icon-large, .drop-zone.dragover .icon-large {
+  color: var(--citruss-orange);
+}
+
+/* File List & Items */
+.file-list-container {
+  animation: fadeIn 0.3s ease;
+}
+
+.file-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--citruss-spacing-sm);
+  margin-top: var(--citruss-spacing-md);
+}
+
+.file-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--citruss-spacing-md);
+  background: var(--citruss-glass-bg);
+  border: 1px solid var(--citruss-glass-border);
+  border-radius: var(--citruss-radius-md);
+  transition: all 0.25s ease;
+}
+
+.file-item:hover {
+  background: var(--citruss-glass-bg-hover);
+  border-color: var(--citruss-glass-border-hover);
+}
+
+.file-item-info {
+  display: flex;
+  align-items: center;
+  gap: var(--citruss-spacing-sm);
+  flex-grow: 1;
+}
+
+.file-item-actions {
+  display: flex;
+  gap: var(--citruss-spacing-xs);
+}
+
+/* File Details Badge */
+.file-info-badge {
+  display: flex;
+  align-items: center;
+  gap: var(--citruss-spacing-md);
+  padding: var(--citruss-spacing-md);
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: var(--citruss-radius-md);
+  border: 1px solid var(--citruss-glass-border);
+}
+
+.file-info-badge .file-name {
+  font-weight: 700;
+  display: block;
+  font-size: 1.1rem;
+}
+
+.file-info-badge .file-meta {
+  font-size: 0.85rem;
+  color: var(--citruss-text-muted);
+}
+
+/* Options Panel */
+.options-panel {
+  background: rgba(255, 255, 255, 0.01);
+  padding: var(--citruss-spacing-md);
+  border-radius: var(--citruss-radius-md);
+  border: 1px solid var(--citruss-glass-border);
+}
+
+.radio-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--citruss-spacing-sm);
+}
+
+.radio-label {
+  display: flex;
+  align-items: center;
+  gap: var(--citruss-spacing-sm);
+  cursor: pointer;
+}
+
+.citruss-input {
+  width: 100%;
+  padding: 10px 14px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--citruss-glass-border);
+  border-radius: var(--citruss-radius-sm);
+  color: var(--citruss-text-main);
+  outline: none;
+  transition: all 0.25s ease;
+}
+
+.citruss-input:focus {
+  border-color: var(--citruss-orange);
+  background: rgba(255, 107, 0, 0.02);
+}
+
+/* Pages Rotation Gallery */
+.pages-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: var(--citruss-spacing-md);
+  max-height: 400px;
+  overflow-y: auto;
+  padding: var(--citruss-spacing-xs);
+  border: 1px solid var(--citruss-glass-border);
+  border-radius: var(--citruss-radius-md);
+  background: rgba(0, 0, 0, 0.15);
+}
+
+.page-card {
+  background: var(--citruss-glass-bg);
+  border: 1px solid var(--citruss-glass-border);
+  border-radius: var(--citruss-radius-md);
+  padding: var(--citruss-spacing-sm);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--citruss-spacing-xs);
+  position: relative;
+  transition: all 0.3s var(--citruss-spring-bezier);
+}
+
+.page-card:hover {
+  border-color: var(--citruss-orange);
+  transform: translateY(-2px);
+}
+
+.page-thumbnail-container {
+  width: 100%;
+  height: 150px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: var(--citruss-radius-sm);
+  overflow: hidden;
+  position: relative;
+}
+
+.page-thumbnail-canvas {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  transition: transform 0.3s var(--citruss-spring-bezier);
+}
+
+/* Rotation Angles Classes */
+.rot-0 { transform: rotate(0deg); }
+.rot-90 { transform: rotate(90deg); }
+.rot-180 { transform: rotate(180deg); }
+.rot-270 { transform: rotate(270deg); }
+
+.page-number-badge {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--citruss-text-muted);
+}
+
+/* Status Toast Notification */
+#status-toast {
+  position: fixed;
+  bottom: var(--citruss-spacing-lg);
+  right: var(--citruss-spacing-lg);
+  z-index: 1000;
+  transition: all 0.35s var(--citruss-spring-bezier);
+}
+
+.status-toast-hidden {
+  opacity: 0;
+  transform: translateY(20px) scale(0.9);
+  pointer-events: none;
+}
+
+.toast-content {
+  display: flex;
+  align-items: center;
+  gap: var(--citruss-spacing-md);
+  padding: var(--citruss-spacing-md) var(--citruss-spacing-lg) !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* Action Bars */
+.action-bar {
+  display: flex;
+  gap: var(--citruss-spacing-sm);
+  align-items: center;
+}
+
+/* Extra status panels */
+.gs-status-badge {
+  display: flex;
+  gap: var(--citruss-spacing-sm);
+  padding: var(--citruss-spacing-sm) var(--citruss-spacing-md);
+  background: rgba(254, 202, 87, 0.06);
+  border: 1px solid rgba(25eca57, 0.15);
+  border-radius: var(--citruss-radius-sm);
+  align-items: flex-start;
+}
+
+[data-theme=light] .drop-zone {
+  background: rgba(0, 0, 0, 0.01);
+}
+
+[data-theme=light] .file-info-badge {
+  background: rgba(0, 0, 0, 0.02);
+}
+
+[data-theme=light] .gs-status-badge {
+  background: rgba(254, 202, 87, 0.1);
+}

@@ -1,0 +1,27 @@
+{
+  "name": "pdfgil",
+  "version": "1.0.0",
+  "description": "Offline PDF Merger, Splitter, Rotator, and Compressor using CitruSS UI Kit",
+  "main": "src/main/main.js",
+  "scripts": {
+    "start": "electron .",
+    "test": "echo \"Error: no test specified\" && exit 0"
+  },
+  "keywords": [
+    "pdf",
+    "editor",
+    "merge",
+    "split",
+    "rotate",
+    "compress",
+    "electron"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "pdf-lib": "*"
+  },
+  "devDependencies": {
+    "electron": "^30.0.0"
+  }
+}

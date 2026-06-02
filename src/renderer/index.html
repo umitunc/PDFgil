@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="tr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PDFgil - Masaüstü PDF Editörü</title>
+  
+  <!-- CitruSS Vibrant Frosted Glassmorphism Stylesheet -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/umitunc/CitruSS/dist/citruss.css" />
+  
+  <!-- Material Symbols for Premium Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet" />
+  
+  <!-- Custom App Styles -->
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body class="citruss-dashboard-shell">
+
+  <div class="citruss-dashboard-main">
+    <!-- Header Navbar -->
+    <header class="citruss-navbar">
+      <div class="citruss-logo-area">
+        🍊 PDF<span>gil</span>
+      </div>
+      
+      <!-- Module Navigation Tab Buttons -->
+      <div class="citruss-btn-group" id="module-tabs">
+        <button class="citruss-btn active" data-tab="merge">
+          <span class="material-symbols-rounded">merge</span> Birleştir
+        </button>
+        <button class="citruss-btn" data-tab="split">
+          <span class="material-symbols-rounded">call_split</span> Ayır
+        </button>
+        <button class="citruss-btn" data-tab="rotate">
+          <span class="material-symbols-rounded">rotate_right</span> Döndür
+        </button>
+        <button class="citruss-btn" data-tab="compress">
+          <span class="material-symbols-rounded">compress</span> Sıkıştır
+        </button>
+      </div>
+      
+      <div class="interactive">
+        <button class="citruss-btn btn-sm btn-icon" id="theme-toggle" title="Koyu/Açık Tema">
+          <span class="material-symbols-rounded" id="theme-icon">light_mode</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="citruss-dashboard-content">
+      
+      <!-- Merge Module Section -->
+      <section id="sec-merge" class="module-section active">
+        <div class="citruss-card p-lg">
+          <h3>📂 PDF Birleştirme (Merge)</h3>
+          <p class="text-muted">Birden fazla PDF dosyası yükleyin, sıralarını düzenleyin ve tek bir PDF dosyası olarak birleştirin.</p>
+          
+          <!-- Drag & Drop Zone -->
+          <div class="drop-zone mt-md" id="merge-dropzone">
+            <span class="material-symbols-rounded icon-large">cloud_upload</span>
+            <p>PDF dosyalarını sürükleyip bırakın veya seçmek için tıklayın</p>
+            <button class="citruss-btn btn-primary btn-sm mt-sm">Dosya Seç</button>
+          </div>
+
+          <!-- File List -->
+          <div class="file-list-container mt-lg d-none" id="merge-list-container">
+            <h4>Seçilen Dosyalar</h4>
+            <div class="pages-gallery mt-md" id="merge-preview-grid">
+              <!-- Dynamically populated preview cards -->
+            </div>
+
+            <!-- Merge Sıkıştırma Seçenekleri -->
+            <div class="options-panel mt-lg">
+              <h4>Sıkıştırma Oranı Seçin</h4>
+              <div class="radio-group mt-sm">
+                <label class="radio-label">
+                  <input type="radio" name="merge-compress-profile" value="none" checked>
+                  <span>Sıkıştırma Yok (Orijinal Kalite)</span>
+                </label>
+                <label class="radio-label">
+                  <input type="radio" name="merge-compress-profile" value="ebook">
+                  <span>Standart Sıkıştırma (150 DPI - Ghostscript)</span>
+                </label>
+                <label class="radio-label">
+                  <input type="radio" name="merge-compress-profile" value="screen">
+                  <span>Agresif Sıkıştırma (96 DPI - Ghostscript)</span>
+                </label>
+              </div>
+            </div>
+            
+            <div class="action-bar mt-lg">
+              <button class="citruss-btn btn-success" id="btn-merge-action">
+                <span class="material-symbols-rounded">merge</span> PDF'leri Birleştir
+              </button>
+              <button class="citruss-btn btn-danger btn-sm" id="btn-merge-clear">Temizle</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Split Module Section -->
+      <section id="sec-split" class="module-section">
+        <div class="citruss-card p-lg">
+          <h3>✂️ PDF Ayırma (Split)</h3>
+          <p class="text-muted">Bir PDF dosyası yükleyin, sayfalarını ayrı dosyalara bölün veya belirli bir aralığı dışarı aktarın.</p>
+          
+          <div class="drop-zone mt-md" id="split-dropzone">
+            <span class="material-symbols-rounded icon-large">cloud_upload</span>
+            <p>Bir PDF dosyası sürükleyip bırakın veya seçmek için tıklayın</p>
+            <button class="citruss-btn btn-primary btn-sm mt-sm">Dosya Seç</button>
+          </div>
+
+          <div class="file-details-container mt-lg d-none" id="split-details-container">
+            <div class="file-info-badge">
+              <span class="material-symbols-rounded">picture_as_pdf</span>
+              <div>
+                <span class="file-name" id="split-file-name">belge.pdf</span>
+                <span class="file-meta" id="split-file-meta">5 sayfa - 1.2 MB</span>
+              </div>
+            </div>
+
+            <!-- Split Options -->
+            <div class="options-panel mt-lg">
+              <h4>Ayırma Ayarları</h4>
+              <div class="radio-group mt-sm">
+                <label class="radio-label">
+                  <input type="radio" name="split-mode" value="all" checked>
+                  <span>Her sayfayı ayrı bir PDF olarak kaydet</span>
+                </label>
+                <label class="radio-label">
+                  <input type="radio" name="split-mode" value="range">
+                  <span>Belirli sayfaları ayır</span>
+                </label>
+              </div>
+
+              <div class="input-field mt-md d-none" id="split-range-input-wrapper">
+                <label for="split-range">Sayfa Aralığı (Örn: 1-3 veya 4 veya 2-5):</label>
+                <input type="text" id="split-range" placeholder="Örn: 2-5" class="citruss-input" />
+              </div>
+            </div>
+
+            <div class="action-bar mt-lg">
+              <button class="citruss-btn btn-success" id="btn-split-action">
+                <span class="material-symbols-rounded">call_split</span> PDF'i Ayır
+              </button>
+              <button class="citruss-btn btn-danger btn-sm" id="btn-split-clear">Temizle</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Rotate Module Section -->
+      <section id="sec-rotate" class="module-section">
+        <div class="citruss-card p-lg">
+          <h3>🔄 PDF Döndürme (Rotate)</h3>
+          <p class="text-muted">Bir PDF dosyası yükleyin, istediğiniz sayfaları görsel olarak döndürün ve kaydedin.</p>
+          
+          <div class="drop-zone mt-md" id="rotate-dropzone">
+            <span class="material-symbols-rounded icon-large">cloud_upload</span>
+            <p>Bir PDF dosyası sürükleyip bırakın veya seçmek için tıklayın</p>
+            <button class="citruss-btn btn-primary btn-sm mt-sm">Dosya Seç</button>
+          </div>
+
+          <div class="file-details-container mt-lg d-none" id="rotate-details-container">
+            <div class="file-info-badge">
+              <span class="material-symbols-rounded">picture_as_pdf</span>
+              <div>
+                <span class="file-name" id="rotate-file-name">belge.pdf</span>
+                <span class="file-meta" id="rotate-file-meta">5 sayfa</span>
+              </div>
+            </div>
+
+            <!-- Page rotation gallery container -->
+            <div class="pages-gallery mt-lg" id="rotate-gallery">
+              <!-- Dynamically populated thumbnail cards -->
+            </div>
+
+            <div class="action-bar mt-lg">
+              <button class="citruss-btn btn-success" id="btn-rotate-action">
+                <span class="material-symbols-rounded">save</span> Dönüşleri Kaydet
+              </button>
+              <button class="citruss-btn btn-danger btn-sm" id="btn-rotate-clear">Temizle</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Compress Module Section -->
+      <section id="sec-compress" class="module-section">
+        <div class="citruss-card p-lg">
+          <h3>📉 PDF Sıkıştırma (Compress)</h3>
+          <p class="text-muted">PDF belgenizin boyutunu e-posta eklerine veya web uyumluluğuna göre sıkıştırın.</p>
+          
+          <div class="drop-zone mt-md" id="compress-dropzone">
+            <span class="material-symbols-rounded icon-large">cloud_upload</span>
+            <p>Bir PDF dosyası sürükleyip bırakın veya seçmek için tıklayın</p>
+            <button class="citruss-btn btn-primary btn-sm mt-sm">Dosya Seç</button>
+          </div>
+
+          <div class="file-details-container mt-lg d-none" id="compress-details-container">
+            <div class="file-info-badge">
+              <span class="material-symbols-rounded">picture_as_pdf</span>
+              <div>
+                <span class="file-name" id="compress-file-name">belge.pdf</span>
+                <span class="file-meta" id="compress-file-meta">Orijinal Boyut: 4.5 MB</span>
+              </div>
+            </div>
+
+            <!-- Compress Options -->
+            <div class="options-panel mt-lg">
+              <h4>Sıkıştırma Profili</h4>
+              <div class="radio-group mt-sm">
+                <label class="radio-label">
+                  <input type="radio" name="compress-profile" value="ebook" checked>
+                  <div>
+                    <strong>Standart Sıkıştırma (150 DPI)</strong>
+                    <p class="text-muted text-sm">Resim ve metin kalitesini koruyarak boyut optimizasyonu sağlar.</p>
+                  </div>
+                </label>
+                <label class="radio-label mt-sm">
+                  <input type="radio" name="compress-profile" value="screen">
+                  <div>
+                    <strong>Agresif E-Posta Sıkıştırması (96 DPI)</strong>
+                    <p class="text-muted text-sm">E-posta ek sınırları için maksimum boyutta sıkıştırma sağlar.</p>
+                  </div>
+                </label>
+              </div>
+
+              <!-- Information status if Ghostscript is missing (shows as info) -->
+              <div class="gs-status-badge mt-md" id="gs-info-box">
+                <span class="material-symbols-rounded text-warning">info</span>
+                <p class="text-sm">Not: Ghostscript kuruluyken gelişmiş görüntü yeniden boyutlandırma uygulanır. Ghostscript yoksa temel yerel optimizasyon çalışacaktır.</p>
+              </div>
+            </div>
+
+            <div class="action-bar mt-lg">
+              <button class="citruss-btn btn-success" id="btn-compress-action">
+                <span class="material-symbols-rounded">compress</span> PDF'i Sıkıştır
+              </button>
+              <button class="citruss-btn btn-danger btn-sm" id="btn-compress-clear">Temizle</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Status Indicator / Toast Overlay -->
+      <div id="status-toast" class="status-toast-hidden">
+        <div class="citruss-card toast-content">
+          <span class="material-symbols-rounded" id="toast-icon">info</span>
+          <span id="toast-message">İşlem yapılıyor...</span>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- PDF.js CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  
+  <!-- CitruSS Interactive Vanilla JS Companion Script -->
+  <script src="https://cdn.jsdelivr.net/gh/umitunc/CitruSS/dist/citruss.min.js"></script>
+  
+  <!-- Application Logic -->
+  <script src="js/preview.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
