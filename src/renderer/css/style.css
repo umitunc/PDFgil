@@ -180,7 +180,6 @@
 
 .page-card:hover {
   border-color: var(--citruss-orange);
-  transform: translateY(-2px);
 }
 
 .page-thumbnail-container {
@@ -476,4 +475,23 @@ html:not([data-theme="light"]) .citruss-logo-area .logo-light,
   backdrop-filter: blur(16px) !important;
   -webkit-backdrop-filter: blur(16px) !important;
   border: 1px solid rgba(255, 255, 255, 0.3) !important;
+}
+
+/* Fix backdrop-filter blur/pixelation during transitions on hover */
+.citruss-card,
+.page-card {
+  transform: none !important;
+  transition: border-color 0.25s ease, background-color 0.25s ease, box-shadow 0.25s ease !important;
+}
+
+.citruss-card:hover,
+.page-card:hover {
+  transform: none !important;
+  border-color: var(--citruss-orange) !important;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.45), 0 0 12px rgba(255, 107, 0, 0.1) !important;
+}
+
+[data-theme="light"] .citruss-card:hover,
+[data-theme="light"] .page-card:hover {
+  box-shadow: 0 16px 36px rgba(31, 38, 135, 0.08), 0 0 12px rgba(255, 107, 0, 0.1) !important;
 }
