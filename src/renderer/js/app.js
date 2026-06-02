@@ -64,6 +64,12 @@ document.addEventListener('DOMContentLoaded', () => {
   setupDropzones();
   setupActions();
   setupWindowControls();
+  setupLightbox();
+  
+  const addMoreBtn = document.getElementById('btn-merge-add-more');
+  if (addMoreBtn) {
+    addMoreBtn.addEventListener('click', selectMergeFiles);
+  }
 });
 
 // --- Window Controls ---
@@ -291,6 +297,7 @@ function renderMergeList() {
   const mergePrompt = document.getElementById('merge-prompt');
   const footerBar = document.getElementById('merge-footer-bar');
   const secMerge = document.getElementById('sec-merge');
+  const addMoreBtn = document.getElementById('btn-merge-add-more');
   
   if (state.mergeFiles.length === 0) {
     if (secMerge) secMerge.classList.remove('has-footer');
@@ -298,6 +305,7 @@ function renderMergeList() {
     elements.mergeListContainer.classList.add('d-none');
     if (mergePrompt) mergePrompt.classList.remove('d-none');
     if (footerBar) footerBar.classList.add('d-none');
+    if (addMoreBtn) addMoreBtn.classList.add('d-none');
     return;
   }
   
@@ -306,6 +314,7 @@ function renderMergeList() {
   elements.mergeListContainer.classList.remove('d-none');
   if (mergePrompt) mergePrompt.classList.add('d-none');
   if (footerBar) footerBar.classList.remove('d-none');
+  if (addMoreBtn) addMoreBtn.classList.remove('d-none');
   
   elements.mergePreviewGrid.innerHTML = '';
   
@@ -357,7 +366,7 @@ function renderMergeList() {
     });
     
     card.innerHTML = `
-      <div class="page-thumbnail-container" style="pointer-events: none;">
+      <div class="page-thumbnail-container" onclick="openLightbox('${file.replace(/\\/g, '\\\\')}', 0, '${filename}')" style="cursor: pointer;">
         <canvas class="page-thumbnail-canvas rot-${rotation}" id="merge-canvas-${index}"></canvas>
       </div>
       <div class="page-number-badge" style="pointer-events: none; text-align: center; max-width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${filename}">
@@ -468,7 +477,7 @@ async function loadRotateFile(filePath) {
       const card = document.createElement('div');
       card.className = 'page-card';
       card.innerHTML = `
-        <div class="page-thumbnail-container">
+        <div class="page-thumbnail-container" onclick="openLightbox('${filePath.replace(/\\/g, '\\\\')}', ${i}, 'Page ${i + 1}')" style="cursor: pointer;">
           <canvas class="page-thumbnail-canvas rot-0" id="canvas-page-${i}"></canvas>
         </div>
         <div class="page-number-badge">Page ${i + 1}</div>
@@ -692,3 +701,61 @@ function setupActions() {
     elements.compressDropzone.classList.remove('d-none');
   }
 }
+
+// --- Lightbox Preview Modal Logic ---
+function setupLightbox() {
+  const closeBtn = document.getElementById('btn-lightbox-close');
+  const backdrop = document.getElementById('lightbox-backdrop');
+  if (closeBtn) closeBtn.addEventListener('click', window.closeLightbox);
+  if (backdrop) backdrop.addEventListener('click', window.closeLightbox);
+  
+  // Close on Escape key
+  window.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') window.closeLightbox();
+  });
+}
+
+window.openLightbox = async (filePath, pageIndex, title) => {
+  const modal = document.getElementById('preview-lightbox');
+  const modalTitle = document.getElementById('lightbox-title');
+  const canvas = document.getElementById('lightbox-canvas');
+  
+  if (!modal || !canvas) return;
+  
+  modalTitle.textContent = title;
+  modal.classList.remove('d-none');
+  showToast('Loading preview...', 'loading');
+  
+  try {
+    const pdfDoc = await getPdfDocument(filePath);
+    const page = await pdfDoc.getPage(pageIndex + 1);
+    const context = canvas.getContext('2d');
+    
+    // Scale for high quality preview (width max 800px or target height)
+    const initialViewport = page.getViewport({ scale: 1.0 });
+    const targetHeight = Math.min(650, window.innerHeight * 0.65);
+    const scale = targetHeight / initialViewport.height;
+    const viewport = page.getViewport({ scale });
+    
+    canvas.height = viewport.height;
+    canvas.width = viewport.width;
+    
+    const renderContext = {
+      canvasContext: context,
+      viewport: viewport
+    };
+    
+    await page.render(renderContext).promise;
+    hideToast();
+  } catch (error) {
+    console.error('Error rendering lightbox preview:', error);
+    showToast('Failed to load preview.', 'error');
+  }
+};
+
+window.closeLightbox = () => {
+  const modal = document.getElementById('preview-lightbox');
+  if (modal) {
+    modal.classList.add('d-none');
+  }
+};
