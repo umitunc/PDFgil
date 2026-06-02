@@ -268,11 +268,8 @@
 
 /* Custom App Background Grid & Gradients */
 body.citruss-dashboard-shell {
-  background: 
-    radial-gradient(circle at 10% 20%, rgba(255, 107, 0, 0.08) 0%, transparent 40%),
-    radial-gradient(circle at 90% 80%, rgba(138, 43, 226, 0.06) 0%, transparent 45%),
-    #0c0f17 !important;
-  background-attachment: fixed;
+  background: url('../images/dark_bg.png') no-repeat center center fixed !important;
+  background-size: cover !important;
   position: relative;
 }
 
@@ -285,24 +282,22 @@ body.citruss-dashboard-shell::before {
   height: 100%;
   z-index: -1;
   background-image: 
-    linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+    linear-gradient(rgba(255, 255, 255, 0.01) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.01) 1px, transparent 1px);
   background-size: 32px 32px;
   pointer-events: none;
 }
 
 [data-theme="light"] body.citruss-dashboard-shell {
-  background: 
-    radial-gradient(circle at 10% 20%, rgba(255, 107, 0, 0.07) 0%, transparent 45%),
-    radial-gradient(circle at 90% 80%, rgba(138, 43, 226, 0.05) 0%, transparent 50%),
-    #f3f6fa !important;
+  background: url('../images/light_bg.png') no-repeat center center fixed !important;
+  background-size: cover !important;
   color: #1f2937;
 }
 
 [data-theme="light"] body.citruss-dashboard-shell::before {
   background-image: 
-    linear-gradient(rgba(0, 0, 0, 0.02) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0, 0, 0, 0.02) 1px, transparent 1px);
+    linear-gradient(rgba(0, 0, 0, 0.01) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.01) 1px, transparent 1px);
 }
 
 /* Frameless window header adjustments */
