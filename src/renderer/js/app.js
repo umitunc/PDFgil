@@ -285,11 +285,52 @@ function renderMergeList() {
     const filename = file.split(/[\\/]/).pop();
     const card = document.createElement('div');
     card.className = 'page-card';
+    card.setAttribute('draggable', 'true');
+    
+    // Drag & Drop reordering logic
+    card.addEventListener('dragstart', (e) => {
+      card.classList.add('dragging');
+      e.dataTransfer.effectAllowed = 'move';
+      e.dataTransfer.setData('text/plain', index);
+    });
+    
+    card.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+    });
+    
+    card.addEventListener('dragenter', () => {
+      card.classList.add('drag-over');
+    });
+    
+    card.addEventListener('dragleave', () => {
+      card.classList.remove('drag-over');
+    });
+    
+    card.addEventListener('drop', (e) => {
+      e.preventDefault();
+      card.classList.remove('drag-over');
+      const srcIndex = parseInt(e.dataTransfer.getData('text/plain'), 10);
+      const targetIndex = index;
+      
+      if (srcIndex !== targetIndex && !isNaN(srcIndex)) {
+        const draggedItem = state.mergeFiles[srcIndex];
+        state.mergeFiles.splice(srcIndex, 1);
+        state.mergeFiles.splice(targetIndex, 0, draggedItem);
+        renderMergeList();
+      }
+    });
+    
+    card.addEventListener('dragend', () => {
+      card.classList.remove('dragging');
+      document.querySelectorAll('.page-card').forEach(c => c.classList.remove('drag-over'));
+    });
+    
     card.innerHTML = `
-      <div class="page-thumbnail-container">
+      <div class="page-thumbnail-container" style="pointer-events: none;">
         <canvas class="page-thumbnail-canvas rot-${rotation}" id="merge-canvas-${index}"></canvas>
       </div>
-      <div class="page-number-badge" style="text-align: center; max-width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${filename}">
+      <div class="page-number-badge" style="pointer-events: none; text-align: center; max-width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${filename}">
         ${filename}
       </div>
       <div class="file-item-actions">

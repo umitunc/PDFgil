@@ -495,3 +495,24 @@ html:not([data-theme="light"]) .citruss-logo-area .logo-light,
 [data-theme="light"] .page-card:hover {
   box-shadow: 0 16px 36px rgba(31, 38, 135, 0.08), 0 0 12px rgba(255, 107, 0, 0.1) !important;
 }
+
+/* Drag & Drop Reordering Styles */
+.page-card[draggable="true"] {
+  cursor: grab;
+}
+
+.page-card[draggable="true"]:active {
+  cursor: grabbing;
+}
+
+.page-card.dragging {
+  opacity: 0.3 !important;
+  border: 1px dashed var(--citruss-orange) !important;
+  box-shadow: none !important;
+}
+
+.page-card.drag-over {
+  border-color: var(--citruss-orange) !important;
+  background: rgba(255, 107, 0, 0.08) !important;
+  box-shadow: 0 0 15px rgba(255, 107, 0, 0.25) !important;
+}
