@@ -10,5 +10,9 @@ contextBridge.exposeInMainWorld('pdfgilAPI', {
   mergePDFs: (filePaths, outputPath, options) => ipcRenderer.invoke('pdf:merge', filePaths, outputPath, options),
   splitPDF: (filePath, options, outputPath) => ipcRenderer.invoke('pdf:split', filePath, options, outputPath),
   rotatePDF: (filePath, rotationMap, outputPath) => ipcRenderer.invoke('pdf:rotate', filePath, rotationMap, outputPath),
-  compressPDF: (filePath, profile, outputPath) => ipcRenderer.invoke('pdf:compress', filePath, profile, outputPath)
+  compressPDF: (filePath, profile, outputPath) => ipcRenderer.invoke('pdf:compress', filePath, profile, outputPath),
+
+  minimizeWindow: () => ipcRenderer.send('window:minimize'),
+  maximizeWindow: () => ipcRenderer.send('window:maximize'),
+  closeWindow: () => ipcRenderer.send('window:close')
 });

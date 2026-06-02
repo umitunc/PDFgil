@@ -265,3 +265,101 @@
 [data-theme=light] .gs-status-badge {
   background: rgba(254, 202, 87, 0.1);
 }
+
+/* Custom App Background Grid & Gradients */
+body.citruss-dashboard-shell {
+  background: 
+    radial-gradient(circle at 10% 20%, rgba(255, 107, 0, 0.08) 0%, transparent 40%),
+    radial-gradient(circle at 90% 80%, rgba(138, 43, 226, 0.06) 0%, transparent 45%),
+    #0c0f17 !important;
+  background-attachment: fixed;
+  position: relative;
+}
+
+body.citruss-dashboard-shell::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  background-image: 
+    linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+  background-size: 32px 32px;
+  pointer-events: none;
+}
+
+[data-theme="light"] body.citruss-dashboard-shell {
+  background: 
+    radial-gradient(circle at 10% 20%, rgba(255, 107, 0, 0.07) 0%, transparent 45%),
+    radial-gradient(circle at 90% 80%, rgba(138, 43, 226, 0.05) 0%, transparent 50%),
+    #f3f6fa !important;
+  color: #1f2937;
+}
+
+[data-theme="light"] body.citruss-dashboard-shell::before {
+  background-image: 
+    linear-gradient(rgba(0, 0, 0, 0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.02) 1px, transparent 1px);
+}
+
+/* Frameless window header adjustments */
+header.citruss-navbar {
+  -webkit-app-region: drag; /* Allows dragging the window */
+  user-select: none;
+  padding-top: 12px;
+  padding-bottom: 12px;
+}
+
+/* Stop dragging on interactive components so they are clickable */
+.citruss-logo-area,
+#module-tabs,
+.header-actions {
+  -webkit-app-region: no-drag;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--citruss-spacing-sm);
+}
+
+.window-controls {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: 6px;
+  border-left: 1px solid var(--citruss-glass-border);
+  padding-left: 12px;
+}
+
+.window-controls .citruss-btn {
+  padding: 0 !important;
+  height: 28px !important;
+  width: 28px !important;
+  min-width: 28px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: var(--citruss-radius-sm) !important;
+  background: transparent !important;
+  border: 1px solid transparent !important;
+  transition: all 0.2s ease !important;
+}
+
+.window-controls .citruss-btn:hover {
+  background: var(--citruss-glass-bg-hover) !important;
+  border-color: var(--citruss-glass-border-hover) !important;
+}
+
+.window-controls .btn-win-close:hover {
+  background: var(--citruss-danger) !important;
+  color: white !important;
+  border-color: var(--citruss-danger) !important;
+}
+
+.window-controls .material-symbols-rounded {
+  font-size: 16px !important;
+}

@@ -17,9 +17,12 @@ function createWindow() {
       contextIsolation: true,
       nodeIntegration: false
     },
-    frame: true, // Titlebar included
+    frame: false, // Frameless window
     title: 'PDFgil - Desktop PDF Editor'
   });
+
+  // Remove the default toolbar menu
+  mainWindow.setMenu(null);
 
   // Load the index.html from renderer folder
   mainWindow.loadFile(path.join(__dirname, '../renderer/index.html'));
@@ -28,6 +31,25 @@ function createWindow() {
     mainWindow = null;
   });
 }
+
+// Window control IPCs
+ipcMain.on('window:minimize', () => {
+  if (mainWindow) mainWindow.minimize();
+});
+
+ipcMain.on('window:maximize', () => {
+  if (mainWindow) {
+    if (mainWindow.isMaximized()) {
+      mainWindow.unmaximize();
+    } else {
+      mainWindow.maximize();
+    }
+  }
+});
+
+ipcMain.on('window:close', () => {
+  if (mainWindow) mainWindow.close();
+});
 
 app.on('ready', createWindow);
 

@@ -63,7 +63,23 @@ document.addEventListener('DOMContentLoaded', () => {
   setupTheme();
   setupDropzones();
   setupActions();
+  setupWindowControls();
 });
+
+// --- Window Controls ---
+function setupWindowControls() {
+  document.getElementById('btn-win-minimize').addEventListener('click', () => {
+    window.pdfgilAPI.minimizeWindow();
+  });
+  
+  document.getElementById('btn-win-maximize').addEventListener('click', () => {
+    window.pdfgilAPI.maximizeWindow();
+  });
+  
+  document.getElementById('btn-win-close').addEventListener('click', () => {
+    window.pdfgilAPI.closeWindow();
+  });
+}
 
 // --- Tab Navigation ---
 function setupTabs() {
