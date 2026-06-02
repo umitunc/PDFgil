@@ -15,6 +15,39 @@ function checkGhostscript() {
 
     function tryNext() {
       if (index >= commands.length) {
+        // Fallback: search common Windows installation directories if on Windows
+        if (process.platform === 'win32') {
+          const programFiles = [
+            process.env['ProgramFiles'] || 'C:\\Program Files',
+            process.env['ProgramFiles(x86)'] || 'C:\\Program Files (x86)'
+          ];
+          
+          for (const pf of programFiles) {
+            const gsBaseDir = path.join(pf, 'gs');
+            if (fs.existsSync(gsBaseDir)) {
+              try {
+                const subdirs = fs.readdirSync(gsBaseDir);
+                // Sort subdirs to prefer newer versions (e.g. gs10.03.1 > gs9.50)
+                subdirs.sort((a, b) => b.localeCompare(a, undefined, { numeric: true, sensitivity: 'base' }));
+                
+                for (const subdir of subdirs) {
+                  const binDir = path.join(gsBaseDir, subdir, 'bin');
+                  if (fs.existsSync(binDir)) {
+                    for (const exe of ['gswin64c.exe', 'gswin32c.exe', 'gs.exe']) {
+                      const fullPath = path.join(binDir, exe);
+                      if (fs.existsSync(fullPath)) {
+                        resolve(fullPath);
+                        return;
+                      }
+                    }
+                  }
+                }
+              } catch (e) {
+                // ignore
+              }
+            }
+          }
+        }
         resolve(null);
         return;
       }
