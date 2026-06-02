@@ -33,6 +33,14 @@
   flex-direction: column;
   align-items: center;
   gap: var(--citruss-spacing-xs);
+  min-height: 260px;
+  justify-content: center;
+}
+
+.drop-zone.has-files {
+  min-height: 160px !important;
+  padding: var(--citruss-spacing-xs) !important;
+  border-width: 1px !important;
 }
 
 .drop-zone:hover,
@@ -155,21 +163,22 @@
 /* Pages Rotation Gallery */
 .pages-gallery {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-  gap: var(--citruss-spacing-md);
-  max-height: 400px;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: var(--citruss-spacing-sm);
+  max-height: 290px;
   overflow-y: auto;
   padding: var(--citruss-spacing-xs);
   border: 1px solid var(--citruss-glass-border);
   border-radius: var(--citruss-radius-md);
   background: rgba(0, 0, 0, 0.15);
+  width: 100%;
 }
 
 .page-card {
   background: var(--citruss-glass-bg);
   border: 1px solid var(--citruss-glass-border);
   border-radius: var(--citruss-radius-md);
-  padding: var(--citruss-spacing-sm);
+  padding: 8px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -184,7 +193,7 @@
 
 .page-thumbnail-container {
   width: 100%;
-  height: 150px;
+  height: 110px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -333,9 +342,13 @@ header.citruss-navbar {
 }
 
 main.citruss-dashboard-content {
-  margin-top: 56px;
-  /* Offset for fixed header */
-  padding-bottom: 90px;
+  margin-top: 61px; /* Navbar height 56px + top 5px */
+  padding: 16px !important;
+  height: calc(100vh - 61px);
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; /* Avoid double scrollbars on the main window */
 }
 
 .logo-text {
@@ -566,15 +579,101 @@ html:not([data-theme="light"]) .citruss-logo-area .logo-light,
 }
 
 .footer-compression-group .radio-label {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 0.9rem;
-  font-weight: 500;
-  cursor: pointer;
+  display: none;
 }
 
 .footer-action-group {
   display: flex;
   gap: 12px;
+}
+
+/* Premium Glassmorphic Dropdown Select */
+.citruss-select {
+  padding: 8px 32px 8px 12px;
+  background: rgba(10, 15, 30, 0.3) !important;
+  border: 1px solid var(--citruss-glass-border) !important;
+  border-radius: var(--citruss-radius-sm) !important;
+  color: var(--citruss-text-main) !important;
+  outline: none;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml;utf8,<svg fill='white' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/><path d='M0 0h24v24H0z' fill='none'/></svg>") !important;
+  background-repeat: no-repeat !important;
+  background-position: right 8px center !important;
+  background-size: 18px !important;
+  transition: all 0.25s ease;
+}
+
+[data-theme="light"] .citruss-select {
+  background: rgba(255, 255, 255, 0.5) !important;
+  color: #1f2937 !important;
+  border: 1px solid rgba(0, 0, 0, 0.15) !important;
+  background-image: url("data:image/svg+xml;utf8,<svg fill='black' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/><path d='M0 0h24v24H0z' fill='none'/></svg>") !important;
+}
+
+.citruss-select:focus {
+  border-color: var(--citruss-orange) !important;
+  box-shadow: 0 0 8px rgba(255, 107, 0, 0.2) !important;
+}
+
+.citruss-select option {
+  background: #0d111d;
+  color: #fff;
+}
+
+[data-theme="light"] .citruss-select option {
+  background: #ffffff;
+  color: #1f2937;
+}
+
+/* Full Height Stretched Card Layouts */
+.module-section {
+  display: none;
+  height: 100%;
+  flex-direction: column;
+}
+
+.module-section.active {
+  display: flex;
+}
+
+.module-section .citruss-card {
+  height: calc(100vh - 61px - 32px) !important; /* Full height minus navbar and gaps */
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  margin-bottom: 0 !important;
+}
+
+/* Shrink Merge Card dynamically when the fixed footer bar is visible */
+#sec-merge.has-footer .citruss-card {
+  height: calc(100vh - 61px - 32px - 76px - 10px) !important;
+}
+
+.module-section .citruss-card > .drop-zone {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-bottom: 0 !important;
+}
+
+.module-section .citruss-card > .drop-zone.has-files {
+  justify-content: flex-start !important;
+}
+
+.file-list-container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.pages-gallery {
+  flex-grow: 1;
+  max-height: none !important; /* Allow the gallery to stretch fully within the card */
+  overflow-y: auto;
 }

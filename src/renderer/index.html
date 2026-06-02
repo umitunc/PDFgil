@@ -72,7 +72,7 @@
           </p>
 
           <!-- Drag & Drop Zone -->
-          <div class="drop-zone mt-md" id="merge-dropzone" style="min-height: 350px; display: flex; align-items: center; justify-content: center; flex-direction: column;">
+          <div class="drop-zone mt-md" id="merge-dropzone">
             <!-- Initial Prompt -->
             <div id="merge-prompt" style="display: flex; flex-direction: column; align-items: center; gap: var(--citruss-spacing-xs);">
               <span class="material-symbols-rounded icon-large">cloud_upload</span>
@@ -81,8 +81,8 @@
             </div>
 
             <!-- File List (shares the same area inside the dropzone container) -->
-            <div class="file-list-container w-100 d-none" id="merge-list-container" style="flex-grow: 1; padding: var(--citruss-spacing-sm);">
-              <div class="pages-gallery" id="merge-preview-grid" style="background: transparent; border: none; max-height: 320px; overflow-y: auto;">
+            <div class="file-list-container w-100 d-none" id="merge-list-container">
+              <div class="pages-gallery" id="merge-preview-grid">
                 <!-- Dynamically populated preview cards -->
               </div>
             </div>
@@ -93,18 +93,11 @@
         <div class="merge-footer-bar d-none" id="merge-footer-bar">
           <div class="footer-compression-group">
             <span class="footer-label">Compression Level:</span>
-            <label class="radio-label">
-              <input type="radio" name="merge-compress-profile" value="none" checked>
-              <span>Original Quality</span>
-            </label>
-            <label class="radio-label">
-              <input type="radio" name="merge-compress-profile" value="ebook">
-              <span>Standard (150 DPI)</span>
-            </label>
-            <label class="radio-label">
-              <input type="radio" name="merge-compress-profile" value="screen">
-              <span>Aggressive (96 DPI)</span>
-            </label>
+            <select class="citruss-select" id="merge-compress-profile">
+              <option value="none">Original Quality (No Comp)</option>
+              <option value="ebook">Standard (150 DPI)</option>
+              <option value="screen">Aggressive (96 DPI)</option>
+            </select>
           </div>
           <div class="footer-action-group">
             <button class="citruss-btn btn-success" id="btn-merge-action">

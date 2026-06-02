@@ -283,14 +283,19 @@ async function selectMergeFiles() {
 function renderMergeList() {
   const mergePrompt = document.getElementById('merge-prompt');
   const footerBar = document.getElementById('merge-footer-bar');
+  const secMerge = document.getElementById('sec-merge');
   
   if (state.mergeFiles.length === 0) {
+    if (secMerge) secMerge.classList.remove('has-footer');
+    elements.mergeDropzone.classList.remove('has-files');
     elements.mergeListContainer.classList.add('d-none');
     if (mergePrompt) mergePrompt.classList.remove('d-none');
     if (footerBar) footerBar.classList.add('d-none');
     return;
   }
   
+  if (secMerge) secMerge.classList.add('has-footer');
+  elements.mergeDropzone.classList.add('has-files');
   elements.mergeListContainer.classList.remove('d-none');
   if (mergePrompt) mergePrompt.classList.add('d-none');
   if (footerBar) footerBar.classList.remove('d-none');
@@ -524,7 +529,7 @@ function setupActions() {
       return;
     }
     
-    const profile = document.querySelector('input[name="merge-compress-profile"]:checked').value;
+    const profile = document.getElementById('merge-compress-profile').value;
     
     const outputPath = await window.pdfgilAPI.selectSavePath({
       title: 'Save Merged PDF file',
