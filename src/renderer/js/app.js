@@ -668,12 +668,111 @@ function setupActions() {
     setProcessing(elements.btnMergeAction, true);
     showToast('Merging PDF files...', 'loading');
 
+    // Show custom loading progress dialog
+    let progressModal = null;
+    if (typeof CitruSS !== 'undefined' && CitruSS.fire) {
+      CitruSS.fire({
+        title: 'Merging PDFs',
+        text: 'Please wait while we merge your documents...',
+        icon: 'info'
+      });
+      progressModal = document.querySelector('.citruss-swal-container');
+      if (progressModal) {
+        const iconEl = progressModal.querySelector('.citruss-swal-icon');
+        if (iconEl) iconEl.remove();
+        const buttonsEl = progressModal.querySelector('.citruss-swal-box > div[style*="display:flex"]');
+        if (buttonsEl) buttonsEl.remove();
+
+        const boxEl = progressModal.querySelector('.citruss-swal-box');
+        if (boxEl) {
+          const spinnerWrapper = document.createElement('div');
+          spinnerWrapper.style.display = 'flex';
+          spinnerWrapper.style.justifyContent = 'center';
+          spinnerWrapper.style.marginBottom = '16px';
+          spinnerWrapper.innerHTML = `
+            <div class="citruss-spinner" style="
+              width: 32px; 
+              height: 32px; 
+              border: 3px solid rgba(255,255,255,0.1); 
+              border-top-color: var(--citruss-lime); 
+              border-radius: 50%; 
+              animation: spin 1s linear infinite;
+            "></div>
+          `;
+          boxEl.insertBefore(spinnerWrapper, boxEl.firstChild);
+        }
+      }
+    }
+
     const result = await window.pdfgilAPI.mergePDFs(state.mergeFiles, outputPath, { compressProfile: profile });
     setProcessing(elements.btnMergeAction, false);
+
+    // Remove the progress modal
+    if (progressModal) {
+      progressModal.remove();
+    }
 
     if (result.success) {
       const msg = result.fallback ? `Merge completed! ${result.message}` : 'Merge completed successfully!';
       showToast(msg, result.fallback ? 'warning' : 'success');
+      
+      if (typeof CitruSS !== 'undefined' && CitruSS.fire) {
+        CitruSS.fire({
+          title: result.fallback ? 'Merge Completed with Warnings' : 'Merge Completed',
+          text: msg,
+          icon: result.fallback ? 'warning' : 'success',
+          confirmButtonText: 'OK'
+        });
+
+        // Customize the dialog buttons
+        const swalContainer = document.querySelector('.citruss-swal-container');
+        if (swalContainer) {
+          const buttonsContainer = swalContainer.querySelector('.citruss-swal-box > div[style*="display:flex"]');
+          if (buttonsContainer) {
+            buttonsContainer.innerHTML = `
+              <button class="citruss-btn" id="swal-open-file">
+                <span class="material-symbols-rounded">open_in_new</span> Open
+              </button>
+              <button class="citruss-btn" id="swal-open-folder">
+                <span class="material-symbols-rounded">folder_open</span> Folder
+              </button>
+              <button class="citruss-btn btn-icon" id="swal-close" title="Close" style="padding:0 !important; width:36px; height:36px; display:flex; align-items:center; justify-content:center;">
+                <span class="material-symbols-rounded">close</span>
+              </button>
+            `;
+
+            const btnOpen = buttonsContainer.querySelector('#swal-open-file');
+            const btnFolder = buttonsContainer.querySelector('#swal-open-folder');
+            const btnClose = buttonsContainer.querySelector('#swal-close');
+
+            const closeDialog = () => {
+              swalContainer.classList.remove('active');
+              const box = swalContainer.querySelector('.citruss-swal-box');
+              if (box) box.classList.remove('show');
+              setTimeout(() => swalContainer.remove(), 300);
+            };
+
+            if (btnOpen) {
+              btnOpen.onclick = () => {
+                window.openResultFile(outputPath);
+                closeDialog();
+              };
+            }
+            if (btnFolder) {
+              btnFolder.onclick = () => {
+                window.showResultInFolder(outputPath);
+                closeDialog();
+              };
+            }
+            if (btnClose) {
+              btnClose.onclick = () => {
+                closeDialog();
+              };
+            }
+          }
+        }
+      }
+
       state.mergeFiles = [];
       renderMergeList();
       showResultCard(outputPath, 'Merged PDF saved');

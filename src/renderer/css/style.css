@@ -389,12 +389,18 @@ body.citruss-dashboard-shell::before {
 main.layout-content {
   flex: 1;
   overflow-y: auto;
-  height: calc(100vh - 140px);
+  height: calc(100vh - 80px);
   -webkit-overflow-scrolling: touch;
   padding: 16px !important;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
+  transition: height 0.25s var(--citruss-spring-bezier);
+}
+
+/* Adjust content height when merge footer is active and visible */
+body:has(#sec-merge.has-footer.active) main.layout-content {
+  height: calc(100vh - 156px);
 }
 
 .layout-footer {
@@ -1081,4 +1087,9 @@ html:not([data-theme="light"]) .citruss-logo-area .logo-light,
 [data-theme="light"] .kbd {
   background: rgba(0, 0, 0, 0.06);
   border-color: rgba(0, 0, 0, 0.12);
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
