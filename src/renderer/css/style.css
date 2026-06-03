@@ -35,12 +35,27 @@
   gap: var(--citruss-spacing-xs);
   min-height: 260px;
   justify-content: center;
+  box-sizing: border-box;
 }
 
 .drop-zone.has-files {
-  min-height: 160px !important;
+  min-height: 120px !important;
   padding: var(--citruss-spacing-xs) !important;
   border-width: 1px !important;
+  flex: 1;
+  min-height: 0 !important;
+  overflow: hidden;
+}
+
+#merge-prompt {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--citruss-spacing-xs);
+}
+
+.d-none {
+  display: none !important;
 }
 
 .drop-zone:hover,
@@ -374,7 +389,7 @@ body.citruss-dashboard-shell::before {
 main.layout-content {
   flex: 1;
   overflow-y: auto;
-  height: 100%;
+  height: calc(100vh - 140px);
   -webkit-overflow-scrolling: touch;
   padding: 16px !important;
   box-sizing: border-box;
@@ -646,7 +661,7 @@ html:not([data-theme="light"]) .citruss-logo-area .logo-light,
 }
 
 [data-theme="light"] .citruss-select {
-  background: rgba(255, 255, 255, 0.5) !important;
+  background-color: rgba(255, 255, 255, 0.5) !important;
   color: #1f2937 !important;
   border: 1px solid rgba(0, 0, 0, 0.15) !important;
   background-image: url("data:image/svg+xml;utf8,<svg fill='black' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/><path d='M0 0h24v24H0z' fill='none'/></svg>") !important;
@@ -692,11 +707,13 @@ html:not([data-theme="light"]) .citruss-logo-area .logo-light,
 }
 
 .module-section .citruss-card>.drop-zone {
-  flex-grow: 1;
+  flex: 1;
+  min-height: 0;
   display: flex;
   flex-direction: column;
   justify-content: center;
   margin-bottom: 0 !important;
+  overflow: hidden;
 }
 
 .module-section .citruss-card>.drop-zone.has-files {
@@ -704,14 +721,17 @@ html:not([data-theme="light"]) .citruss-logo-area .logo-light,
 }
 
 .file-list-container {
-  height: 100%;
+  flex: 1;
+  min-height: 0;
   display: flex;
   flex-direction: column;
   width: 100%;
+  overflow: hidden;
 }
 
 .pages-gallery {
-  flex-grow: 1;
+  flex: 1;
+  min-height: 0;
   max-height: none !important;
   /* Allow the gallery to stretch fully within the card */
   overflow-y: auto;
