@@ -479,7 +479,7 @@ html:not([data-theme="light"]) .logo-text,
 
 /* Logo Theme Switch Styles */
 .citruss-logo-area img {
-  height: 100%;
+  height: 36px;
   width: auto;
   display: block;
 }
