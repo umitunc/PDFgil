@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const { PDFDocument } = require('pdf-lib');
+const { PDFDocument, degrees } = require('pdf-lib');
 const { exec, spawn } = require('child_process');
 
 /**
@@ -83,7 +83,7 @@ async function mergePDFs(filePaths, outputPath) {
     copiedPages.forEach((page) => {
       if (rotation !== 0) {
         const currentRotation = page.getRotation().angle;
-        page.setRotation((currentRotation + rotation) % 360);
+        page.setRotation(degrees((currentRotation + rotation) % 360));
       }
       mergedPdf.addPage(page);
     });
@@ -160,7 +160,7 @@ async function rotatePDF(filePath, rotationMap, outputPath) {
     if (index >= 0 && index < pdf.getPageCount()) {
       const page = pdf.getPage(index);
       // setRotation takes 0, 90, 180, 270
-      page.setRotation(degrees);
+      page.setRotation(degrees(degrees));
     }
   }
   

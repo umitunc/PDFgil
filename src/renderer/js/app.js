@@ -637,6 +637,7 @@ async function loadCompressFile(filePath) {
     showToast('Loading file...', 'loading');
     const metadata = await window.pdfgilAPI.getMetadata(filePath);
     state.compressFile = filePath;
+    state.compressOriginalSize = metadata.sizeBytes;
     elements.compressFileName.textContent = filePath.split(/[\\/]/).pop();
     elements.compressFileMeta.textContent = `Original Size: ${formatBytes(metadata.sizeBytes)}`;
     elements.compressDetailsContainer.classList.remove('d-none');
@@ -668,116 +669,40 @@ function setupActions() {
     setProcessing(elements.btnMergeAction, true);
     showToast('Merging PDF files...', 'loading');
 
-    // Show custom loading progress dialog
-    let progressModal = null;
-    if (typeof CitruSS !== 'undefined' && CitruSS.fire) {
-      CitruSS.fire({
-        title: 'Merging PDFs',
-        text: 'Please wait while we merge your documents...',
-        icon: 'info'
-      });
-      progressModal = document.querySelector('.citruss-swal-container');
-      if (progressModal) {
-        const iconEl = progressModal.querySelector('.citruss-swal-icon');
-        if (iconEl) iconEl.remove();
-        const buttonsEl = progressModal.querySelector('.citruss-swal-box > div[style*="display:flex"]');
-        if (buttonsEl) buttonsEl.remove();
-
-        const boxEl = progressModal.querySelector('.citruss-swal-box');
-        if (boxEl) {
-          const spinnerWrapper = document.createElement('div');
-          spinnerWrapper.style.display = 'flex';
-          spinnerWrapper.style.justifyContent = 'center';
-          spinnerWrapper.style.marginBottom = '16px';
-          spinnerWrapper.innerHTML = `
-            <div class="citruss-spinner" style="
-              width: 32px; 
-              height: 32px; 
-              border: 3px solid rgba(255,255,255,0.1); 
-              border-top-color: var(--citruss-lime); 
-              border-radius: 50%; 
-              animation: spin 1s linear infinite;
-            "></div>
-          `;
-          boxEl.insertBefore(spinnerWrapper, boxEl.firstChild);
-        }
-      }
-    }
+    const progressModal = showProgressModal('Merging PDFs', 'Please wait while we merge your documents...');
 
     const result = await window.pdfgilAPI.mergePDFs(state.mergeFiles, outputPath, { compressProfile: profile });
     setProcessing(elements.btnMergeAction, false);
 
-    // Remove the progress modal
-    if (progressModal) {
-      progressModal.remove();
-    }
+    if (progressModal) progressModal.remove();
 
     if (result.success) {
-      const msg = result.fallback ? `Merge completed! ${result.message}` : 'Merge completed successfully!';
-      showToast(msg, result.fallback ? 'warning' : 'success');
-      
-      if (typeof CitruSS !== 'undefined' && CitruSS.fire) {
-        CitruSS.fire({
-          title: result.fallback ? 'Merge Completed with Warnings' : 'Merge Completed',
-          text: msg,
-          icon: result.fallback ? 'warning' : 'success',
-          confirmButtonText: 'OK'
-        });
-
-        // Customize the dialog buttons
-        const swalContainer = document.querySelector('.citruss-swal-container');
-        if (swalContainer) {
-          const buttonsContainer = swalContainer.querySelector('.citruss-swal-box > div[style*="display:flex"]');
-          if (buttonsContainer) {
-            buttonsContainer.innerHTML = `
-              <button class="citruss-btn" id="swal-open-file">
-                <span class="material-symbols-rounded">open_in_new</span> Open
-              </button>
-              <button class="citruss-btn" id="swal-open-folder">
-                <span class="material-symbols-rounded">folder_open</span> Folder
-              </button>
-              <button class="citruss-btn btn-icon" id="swal-close" title="Close" style="padding:0 !important; width:36px; height:36px; display:flex; align-items:center; justify-content:center;">
-                <span class="material-symbols-rounded">close</span>
-              </button>
-            `;
-
-            const btnOpen = buttonsContainer.querySelector('#swal-open-file');
-            const btnFolder = buttonsContainer.querySelector('#swal-open-folder');
-            const btnClose = buttonsContainer.querySelector('#swal-close');
-
-            const closeDialog = () => {
-              swalContainer.classList.remove('active');
-              const box = swalContainer.querySelector('.citruss-swal-box');
-              if (box) box.classList.remove('show');
-              setTimeout(() => swalContainer.remove(), 300);
-            };
-
-            if (btnOpen) {
-              btnOpen.onclick = () => {
-                window.openResultFile(outputPath);
-                closeDialog();
-              };
-            }
-            if (btnFolder) {
-              btnFolder.onclick = () => {
-                window.showResultInFolder(outputPath);
-                closeDialog();
-              };
-            }
-            if (btnClose) {
-              btnClose.onclick = () => {
-                closeDialog();
-              };
-            }
-          }
-        }
+      let fileSizeStr = '';
+      try {
+        const metadata = await window.pdfgilAPI.getMetadata(outputPath);
+        fileSizeStr = ` (Size: ${formatBytes(metadata.sizeBytes)})`;
+      } catch (err) {
+        console.error(err);
       }
+
+      const msg = result.fallback ? `Merge completed! ${result.message}` : 'Merge completed successfully!';
+      showToast(msg + fileSizeStr, result.fallback ? 'warning' : 'success');
+      
+      showCustomResultModal(
+        result.fallback ? 'Merge Completed with Warnings' : 'Merge Completed',
+        msg + fileSizeStr,
+        result.fallback ? 'warning' : 'success',
+        outputPath
+      );
 
       state.mergeFiles = [];
       renderMergeList();
       showResultCard(outputPath, 'Merged PDF saved');
     } else {
       showToast(`Error: ${result.error}`, 'error');
+      if (typeof CitruSS !== 'undefined' && CitruSS.fire) {
+        CitruSS.fire({ title: 'Error', text: result.error, icon: 'error' });
+      }
     }
   });
 
@@ -828,14 +753,43 @@ function setupActions() {
 
     setProcessing(elements.btnSplitAction, true);
     showToast('Splitting PDF...', 'loading');
+
+    const progressModal = showProgressModal('Splitting PDF', 'Please wait while we split your document...');
+
     const result = await window.pdfgilAPI.splitPDF(state.splitFile, options, outputPath);
     setProcessing(elements.btnSplitAction, false);
 
+    if (progressModal) progressModal.remove();
+
     if (result.success) {
-      showToast('Split completed successfully!', 'success');
+      let sizeInfo = '';
+      if (mode === 'range') {
+        try {
+          const metadata = await window.pdfgilAPI.getMetadata(outputPath);
+          sizeInfo = ` (Size: ${formatBytes(metadata.sizeBytes)})`;
+        } catch (err) {
+          console.error(err);
+        }
+      } else {
+        sizeInfo = ` (${result.files ? result.files.length : 0} files created)`;
+      }
+
+      const msg = `Split completed successfully!${sizeInfo}`;
+      showToast(msg, 'success');
+
+      showCustomResultModal(
+        'Split Completed',
+        msg,
+        'success',
+        outputPath
+      );
+
       clearSplitSelection();
     } else {
       showToast(`Error: ${result.error}`, 'error');
+      if (typeof CitruSS !== 'undefined' && CitruSS.fire) {
+        CitruSS.fire({ title: 'Error', text: result.error, icon: 'error' });
+      }
     }
   });
 
@@ -863,14 +817,39 @@ function setupActions() {
 
     setProcessing(elements.btnRotateAction, true);
     showToast('Applying rotations...', 'loading');
+
+    const progressModal = showProgressModal('Rotating PDF', 'Please wait while we rotate your document pages...');
+
     const result = await window.pdfgilAPI.rotatePDF(state.rotateFile, state.rotateState, outputPath);
     setProcessing(elements.btnRotateAction, false);
 
+    if (progressModal) progressModal.remove();
+
     if (result.success) {
-      showToast('Rotations saved successfully!', 'success');
+      let fileSizeStr = '';
+      try {
+        const metadata = await window.pdfgilAPI.getMetadata(outputPath);
+        fileSizeStr = ` (Size: ${formatBytes(metadata.sizeBytes)})`;
+      } catch (err) {
+        console.error(err);
+      }
+
+      const msg = `Rotations saved successfully!${fileSizeStr}`;
+      showToast(msg, 'success');
+
+      showCustomResultModal(
+        'Rotations Saved',
+        msg,
+        'success',
+        outputPath
+      );
+
       clearRotateSelection();
     } else {
       showToast(`Error: ${result.error}`, 'error');
+      if (typeof CitruSS !== 'undefined' && CitruSS.fire) {
+        CitruSS.fire({ title: 'Error', text: result.error, icon: 'error' });
+      }
     }
   });
 
@@ -901,15 +880,62 @@ function setupActions() {
 
     setProcessing(elements.btnCompressAction, true);
     showToast('Compressing PDF...', 'loading');
+
+    const progressModal = showProgressModal('Compressing PDF', 'Please wait while we compress your document...');
+
     const result = await window.pdfgilAPI.compressPDF(state.compressFile, profile, outputPath);
     setProcessing(elements.btnCompressAction, false);
 
+    if (progressModal) progressModal.remove();
+
     if (result.success) {
-      const msg = result.fallback ? result.message : 'Compression completed successfully!';
+      let compressionDetails = '';
+      let progressHTML = '';
+      try {
+        const metadata = await window.pdfgilAPI.getMetadata(outputPath);
+        const originalSize = state.compressOriginalSize || 0;
+        const compressedSize = metadata.sizeBytes;
+
+        if (originalSize > 0) {
+          const reduction = Math.round(((originalSize - compressedSize) / originalSize) * 100);
+          compressionDetails = ` (Compressed from ${formatBytes(originalSize)} to ${formatBytes(compressedSize)}, ${reduction}% reduction)`;
+          
+          progressHTML = `
+            <div style="margin: 16px auto; text-align: left; width: 85%;">
+              <div style="display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 0.85rem; color: var(--citruss-text-muted);">
+                <span>Size Saved (Reduction)</span>
+                <span style="font-weight: 700; color: var(--citruss-lime);">${reduction}%</span>
+              </div>
+              <div class="citruss-progress-bar progress-lime">
+                <div class="progress-fill" style="width: ${reduction}%;"></div>
+              </div>
+            </div>
+          `;
+        } else {
+          compressionDetails = ` (Size: ${formatBytes(compressedSize)})`;
+        }
+      } catch (err) {
+        console.error(err);
+      }
+
+      const baseMsg = result.fallback ? result.message : 'Compression completed successfully!';
+      const msg = baseMsg + compressionDetails;
       showToast(msg, result.fallback ? 'warning' : 'success');
+
+      showCustomResultModal(
+        result.fallback ? 'Compression Completed with Warnings' : 'Compression Completed',
+        msg,
+        result.fallback ? 'warning' : 'success',
+        outputPath,
+        progressHTML
+      );
+
       clearCompressSelection();
     } else {
       showToast(`Error: ${result.error}`, 'error');
+      if (typeof CitruSS !== 'undefined' && CitruSS.fire) {
+        CitruSS.fire({ title: 'Error', text: result.error, icon: 'error' });
+      }
     }
   });
 
@@ -970,3 +996,113 @@ window.closeLightbox = () => {
   const modal = document.getElementById('preview-lightbox');
   if (modal) modal.classList.add('d-none');
 };
+
+function showProgressModal(title, text) {
+  if (typeof CitruSS !== 'undefined' && CitruSS.fire) {
+    CitruSS.fire({
+      title: title,
+      text: text,
+      icon: 'info'
+    });
+    const progressModal = document.querySelector('.citruss-swal-container');
+    if (progressModal) {
+      const iconEl = progressModal.querySelector('.citruss-swal-icon');
+      if (iconEl) iconEl.remove();
+      const buttonsEl = progressModal.querySelector('.citruss-swal-box > div[style*="display:flex"]');
+      if (buttonsEl) buttonsEl.remove();
+
+      const boxEl = progressModal.querySelector('.citruss-swal-box');
+      if (boxEl) {
+        const spinnerWrapper = document.createElement('div');
+        spinnerWrapper.style.display = 'flex';
+        spinnerWrapper.style.justifyContent = 'center';
+        spinnerWrapper.style.marginBottom = '16px';
+        spinnerWrapper.innerHTML = `
+          <div class="citruss-spinner" style="
+            width: 32px; 
+            height: 32px; 
+            border: 3px solid rgba(255,255,255,0.1); 
+            border-top-color: var(--citruss-lime); 
+            border-radius: 50%; 
+            animation: spin 1s linear infinite;
+          "></div>
+        `;
+        boxEl.insertBefore(spinnerWrapper, boxEl.firstChild);
+      }
+      return progressModal;
+    }
+  }
+  return null;
+}
+
+function showCustomResultModal(title, text, type, outputPath, extraHTML = '') {
+  if (typeof CitruSS !== 'undefined' && CitruSS.fire) {
+    CitruSS.fire({
+      title: title,
+      text: text,
+      icon: type,
+      confirmButtonText: 'OK'
+    });
+
+    const swalContainer = document.querySelector('.citruss-swal-container');
+    if (swalContainer) {
+      if (extraHTML) {
+        const textEl = swalContainer.querySelector('.citruss-swal-box > p');
+        if (textEl) {
+          textEl.insertAdjacentHTML('afterend', extraHTML);
+        }
+      }
+
+      const buttonsContainer = swalContainer.querySelector('.citruss-swal-box > div[style*="display:flex"]');
+      if (buttonsContainer) {
+        buttonsContainer.style.alignItems = 'center';
+        const isDir = !outputPath.endsWith('.pdf');
+        buttonsContainer.innerHTML = `
+          ${!isDir ? `
+          <button class="citruss-btn" id="swal-open-file">
+            <span class="material-symbols-rounded">open_in_new</span> Open
+          </button>` : ''}
+          <button class="citruss-btn" id="swal-open-folder">
+            <span class="material-symbols-rounded">folder_open</span> Folder
+          </button>
+          <button class="citruss-btn btn-icon" id="swal-close" title="Close" style="padding:0 !important; width:36px; height:36px; display:flex; align-items:center; justify-content:center;">
+            <span class="material-symbols-rounded">close</span>
+          </button>
+        `;
+
+        const btnOpen = buttonsContainer.querySelector('#swal-open-file');
+        const btnFolder = buttonsContainer.querySelector('#swal-open-folder');
+        const btnClose = buttonsContainer.querySelector('#swal-close');
+
+        const closeDialog = () => {
+          swalContainer.classList.remove('active');
+          const box = swalContainer.querySelector('.citruss-swal-box');
+          if (box) box.classList.remove('show');
+          setTimeout(() => swalContainer.remove(), 300);
+        };
+
+        if (btnOpen) {
+          btnOpen.onclick = () => {
+            window.openResultFile(outputPath);
+            closeDialog();
+          };
+        }
+        if (btnFolder) {
+          btnFolder.onclick = () => {
+            if (isDir) {
+              window.openResultFile(outputPath);
+            } else {
+              window.showResultInFolder(outputPath);
+            }
+            closeDialog();
+          };
+        }
+        if (btnClose) {
+          btnClose.onclick = () => {
+            closeDialog();
+          };
+        }
+      }
+    }
+  }
+}
