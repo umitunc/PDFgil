@@ -988,7 +988,7 @@ window.openLightbox = async (filePath, pageIndex, title) => {
     const page = await pdfDoc.getPage(pageIndex + 1);
     const context = canvas.getContext('2d');
     const initialViewport = page.getViewport({ scale: 1.0 });
-    const targetHeight = Math.min(650, window.innerHeight * 0.65);
+    const targetHeight = window.innerHeight * 0.82;
     const scale = targetHeight / initialViewport.height;
     const viewport = page.getViewport({ scale });
     canvas.height = viewport.height;

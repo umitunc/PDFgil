@@ -351,7 +351,7 @@ body.citruss-dashboard-shell::before {
   -webkit-app-region: drag;
   /* Allows dragging the window */
   user-select: none;
-  height: 56px;
+  height: 70px;
   padding: 0 16px 0 0;
   margin: 5px 5px 0 5px;
   display: flex;
@@ -389,7 +389,7 @@ body.citruss-dashboard-shell::before {
 main.layout-content {
   flex: 1;
   overflow-y: auto;
-  height: calc(100vh - 80px);
+  height: calc(100vh - 94px);
   -webkit-overflow-scrolling: touch;
   padding: 16px !important;
   box-sizing: border-box;
@@ -400,7 +400,7 @@ main.layout-content {
 
 /* Adjust content height when merge footer is active and visible */
 body:has(#sec-merge.has-footer.active) main.layout-content {
-  height: calc(100vh - 156px);
+  height: calc(100vh - 170px);
 }
 
 .layout-footer {
@@ -479,7 +479,7 @@ html:not([data-theme="light"]) .logo-text,
 
 /* Logo Theme Switch Styles */
 .citruss-logo-area img {
-  height: 36px;
+  height: 54px;
   width: auto;
   display: block;
 }
@@ -515,8 +515,8 @@ html:not([data-theme="light"]) .citruss-logo-area .logo-light,
 /* Glassmorphism Card and Panel Enhancements */
 .citruss-card {
   background: rgba(10, 15, 30, 0.25) !important;
-  backdrop-filter: blur(28px) saturate(200%) !important;
-  -webkit-backdrop-filter: blur(28px) saturate(200%) !important;
+  backdrop-filter: blur(5px) saturate(200%) !important;
+  -webkit-backdrop-filter: blur(5px) saturate(200%) !important;
   border: 1px solid rgba(255, 255, 255, 0.07) !important;
   box-shadow: 0 16px 36px rgba(0, 0, 0, 0.4),
     inset 0 1px 0 0 rgba(255, 255, 255, 0.08) !important;
@@ -524,8 +524,8 @@ html:not([data-theme="light"]) .citruss-logo-area .logo-light,
 
 [data-theme="light"] .citruss-card {
   background: rgba(255, 255, 255, 0) !important;
-  backdrop-filter: blur(28px) saturate(200%) !important;
-  -webkit-backdrop-filter: blur(28px) saturate(200%) !important;
+  backdrop-filter: blur(5px) saturate(200%) !important;
+  -webkit-backdrop-filter: blur(5px) saturate(200%) !important;
   border: 1px solid rgba(255, 255, 255, 0.45) !important;
   box-shadow: 0 16px 36px rgba(31, 38, 135, 0.06),
     inset 0 1px 0 0 rgba(255, 255, 255, 0.25) !important;
@@ -1090,6 +1090,95 @@ html:not([data-theme="light"]) .citruss-logo-area .logo-light,
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* ====================================================
+   FULL VIEWPORT PDF LIGHTBOX OVERRIDES
+   ==================================================== */
+#preview-lightbox {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+#preview-lightbox .citruss-modal-backdrop {
+  background: rgba(10, 12, 18, 0.9) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+}
+
+#preview-lightbox .citruss-modal-content {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  max-width: 100% !important;
+  width: 100% !important;
+  height: 100% !important;
+  padding: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  align-items: center !important;
+  gap: 0 !important;
+}
+
+#preview-lightbox #lightbox-title {
+  color: rgba(255, 255, 255, 0.8) !important;
+  font-size: 1.1rem !important;
+  margin: 15px 0 5px 0 !important;
+  font-weight: 500 !important;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  z-index: 2002;
+}
+
+#preview-lightbox .lightbox-body {
+  background: transparent !important;
+  padding: 0 !important;
+  max-height: 85vh !important;
+  width: 100% !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  overflow: hidden !important;
+}
+
+#preview-lightbox #lightbox-canvas {
+  max-height: 82vh !important;
+  max-width: 95vw !important;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6) !important;
+  border-radius: 4px !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  background: #fff !important;
+  /* White PDF page background */
+}
+
+#preview-lightbox #btn-lightbox-close {
+  position: fixed !important;
+  top: 20px !important;
+  right: 20px !important;
+  z-index: 2005 !important;
+  border-radius: 50% !important;
+  width: 40px !important;
+  height: 40px !important;
+  background: rgba(255, 94, 87, 0.9) !important;
+  border: none !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
+  transition: all 0.2s ease !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  color: white;
+}
+
+#preview-lightbox #btn-lightbox-close:hover {
+  background: rgb(255, 70, 60) !important;
+  transform: scale(1.1) !important;
 }
