@@ -744,7 +744,10 @@ function setupActions() {
         return;
       }
       options.range = rangeVal;
-      outputPath = await window.pdfgilAPI.selectSavePath({ title: 'Save split pages', defaultPath: 'split_document.pdf' });
+      const originalPath = state.splitFile;
+      const dotIndex = originalPath.lastIndexOf('.');
+      const defaultPath = dotIndex !== -1 ? originalPath.substring(0, dotIndex) + '_splitted.pdf' : originalPath + '_splitted.pdf';
+      outputPath = await window.pdfgilAPI.selectSavePath({ title: 'Save split pages', defaultPath });
       if (!outputPath) return;
     } else {
       outputPath = await window.pdfgilAPI.selectFolder();
@@ -809,9 +812,12 @@ function setupActions() {
   elements.btnRotateAction.addEventListener('click', async () => {
     if (!state.rotateFile) return;
 
+    const originalPath = state.rotateFile;
+    const dotIndex = originalPath.lastIndexOf('.');
+    const defaultPath = dotIndex !== -1 ? originalPath.substring(0, dotIndex) + '_rotated.pdf' : originalPath + '_rotated.pdf';
     const outputPath = await window.pdfgilAPI.selectSavePath({
       title: 'Save rotated PDF file',
-      defaultPath: 'rotated_document.pdf'
+      defaultPath
     });
     if (!outputPath) return;
 
@@ -872,9 +878,12 @@ function setupActions() {
     if (!state.compressFile) return;
 
     const profile = document.querySelector('input[name="compress-profile"]:checked').value;
+    const originalPath = state.compressFile;
+    const dotIndex = originalPath.lastIndexOf('.');
+    const defaultPath = dotIndex !== -1 ? originalPath.substring(0, dotIndex) + '_compressed.pdf' : originalPath + '_compressed.pdf';
     const outputPath = await window.pdfgilAPI.selectSavePath({
       title: 'Save compressed PDF file',
-      defaultPath: 'compressed_document.pdf'
+      defaultPath
     });
     if (!outputPath) return;
 
